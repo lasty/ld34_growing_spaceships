@@ -4,6 +4,9 @@
 
 #include <SDL_events.h>
 
+#include "camera.h"
+#include "ship.h"
+
 
 class Game
 {
@@ -13,6 +16,10 @@ public:
 private:
 	bool running = true;
 
+	Camera world_cam;
+	Ship ship;
+
+	float rot = 0.0f;
 
 public:
 	bool GetRunning() const { return running; }

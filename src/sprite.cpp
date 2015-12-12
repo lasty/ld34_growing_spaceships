@@ -4,6 +4,7 @@
 
 #include "sprite.h"
 #include "globals.h"
+#include "transform.h"
 
 
 Sprite::Sprite(Surface &surface, int x, int y, int w, int h, float zoom)
@@ -31,6 +32,17 @@ void Sprite::Render(Camera &cam, float x, float y, float rot)
 	SDL_Rect dest = cam.WorldToScreen(x - center.x, y - center.y, dest_rect.w, dest_rect.h);
 
 	SDL_RenderCopyEx(RENDERER, surface_ref->GetTexture(), &src_rect, &dest, rot, nullptr, SDL_FLIP_NONE);
+}
+
+
+void Sprite::Render(Camera &cam, float x, float y, float rot, const Transform &parent_transform)
+{
+	glm::vec4 pos { x, y, 0.0f, 1.0f };
+
+	pos = pos * parent_transform.GetMatrix();
+
+	Render(cam, pos.x, pos.y, parent_transform.GetRotation() + rot);
+
 }
 
 

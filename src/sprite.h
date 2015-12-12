@@ -8,6 +8,7 @@
 
 #include "surface.h"
 #include "camera.h"
+#include "transform.h"
 
 #include <SDL_rect.h>
 
@@ -27,6 +28,7 @@ public:
 
 
 	void Render(Camera &cam, float x, float y, float rot);
+	void Render(Camera &cam, float x, float y, float rot, const Transform & parent_transform);
 
 	void Render_Simple(int x, int y);
 

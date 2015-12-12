@@ -125,6 +125,9 @@ void CreateRenderer(SDL_Window *window)
 	}
 
 	SDL_SetRenderDrawBlendMode(RENDERER, SDL_BLENDMODE_BLEND);
+
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+
 }
 
 

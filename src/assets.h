@@ -6,8 +6,8 @@
 #pragma once
 
 
-
 #include "sprite.h"
+#include "globals.h"
 
 #include <map>
 
