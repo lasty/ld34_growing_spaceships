@@ -23,6 +23,9 @@ public:
 	float x = 0.0f;
 	float y = 0.0f;
 	float rot = 0.0f;
+
+	bool is_connected = false;
+	class Part * connects_to = nullptr;
 };
 
 
@@ -51,6 +54,8 @@ public:
 
 private:
 
+	int island = 0;
+
 	glm::vec2 offset;
 	float rot = 0.0f;
 
@@ -77,6 +82,11 @@ public:
 	void SetOffset(const glm::vec2 &new_offset) { offset = new_offset; }
 
 	float GetRot() const { return rot; }
+
+	void SetIsland(int new_island) { island = new_island; }
+	int GetIsland() const { return island; }
+
+	void SetIslandRecursive(int island_no);
 
 };
 

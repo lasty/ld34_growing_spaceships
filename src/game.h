@@ -56,6 +56,7 @@ public:
 
 
 	void AttachPartToShip(const std::string &part_def);
+	void DeleteShipPart();
 
 };
 

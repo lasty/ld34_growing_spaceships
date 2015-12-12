@@ -11,6 +11,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/detail/func_trigonometric.hpp>
 
+#include <iostream>
 
 void RenderCircle(Camera &cam, float x, float y, float radius)
 {
@@ -64,8 +65,15 @@ void RenderColour(int r, int g, int b, int a)
 void RenderColour(const std::string &col_name)
 {
 	if (col_name == "background") RenderColour(10, 20, 30, 255);
-	if (col_name == "hud1") RenderColour(128, 128, 255, 255);
-	if (col_name == "hud2") RenderColour(255, 32, 32, 255);
-	if (col_name == "hud3") RenderColour(192, 192, 192, 255);
+	else if (col_name == "hud_selected_part" or col_name == "hud_blue") RenderColour(128, 128, 255, 255);
+	else if (col_name == "hud_collision" or col_name == "connector_red") RenderColour(255, 32, 32, 255);
+	else if (col_name == "connector_grey") RenderColour(192, 192, 192, 255);
+	else if (col_name == "connector_white") RenderColour(255, 255, 255, 255);
+	else if (col_name == "connector_green") RenderColour(32, 255, 32, 255);
 
+	else
+	{
+		std::cout << "Unknown colour name: " <<  col_name;
+		RenderColour(255, 0, 255, 255);
+	}
 }

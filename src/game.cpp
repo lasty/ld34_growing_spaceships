@@ -98,7 +98,7 @@ void Game::OnMouseDown(int x, int y, int button)
 	SetMouseCursor(x, y);
 
 	if (button == 1) AttachPartToShip("scaffold");
-	else if (button == 3) AttachPartToShip("pointy");
+	else if (button == 3) DeleteShipPart();
 	else if (button == 2) AttachPartToShip("core");
 
 }
@@ -132,7 +132,7 @@ void Game::Render()
 	ship.Render(world_cam);
 
 
-	RenderColour("hud1");
+	RenderColour("hud_blue");
 	//s.Render_Simple(mouse_cursor.x, mouse_cursor.y);
 
 	RenderLine(screen_cam, mouse_cursor.x - 10, mouse_cursor.y, mouse_cursor.x + 10, mouse_cursor.y);
@@ -158,4 +158,10 @@ void Game::ResizeWindow(int w, int h)
 void Game::AttachPartToShip(const std::string &part_def)
 {
 	ship.AttachPartAtCursor(part_def);
+}
+
+
+void Game::DeleteShipPart()
+{
+	ship.DeletePartAtCursor();
 }

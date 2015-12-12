@@ -37,6 +37,7 @@ public:
 	void SetConnectorCursor(glm::vec2 cursor);
 
 	void AttachPartAtCursor(const std::string &partname);
+	void DeletePartAtCursor();
 
 	Part * part_cursor = nullptr;
 	Connector * connector_cursor = nullptr;
@@ -45,6 +46,11 @@ public:
 
 	Transform & GetTransform() { return ship_transform; }
 	const Transform & GetTransform() const { return ship_transform; }
+
+
+	void RecalcConnections();
+
+	void RecalcIslands();
 
 };
 

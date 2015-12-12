@@ -113,11 +113,14 @@ Part::Part(const Part &copy, float x, float y, float rot)
 
 void Part::Render(Camera &cam, const Transform &transform)
 {
-	sprite_ref->Render(cam, offset.x, offset.y, rot, transform);
+	if (island == 1)
+	{
+		sprite_ref->Render(cam, offset.x, offset.y, rot, transform);
+	}
 
 	//RenderCollisionCircles(cam, transform);
 
-	//RenderConnectors(cam, transform, nullptr);
+	RenderConnectors(cam, transform, nullptr);
 }
 
 
@@ -125,7 +128,7 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 {
 	const glm::vec2 this_part_world_pos = transform.GetWorldPosition(offset);
 
-	RenderColour("hud1");
+	RenderColour("hud_selected_part");
 	RenderCircleRotated(cam, this_part_world_pos.x, this_part_world_pos.y, 32, transform.GetWorldRotation(rot));
 
 	//RenderConnectors(cam, transform);
@@ -135,7 +138,7 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 
 void Part::RenderCollisionCircles(Camera &cam, const Transform &transform)
 {
-	RenderColour("hud2");
+	RenderColour("hud_collision");
 
 	for(const auto & circle : collision_circles)
 	{
@@ -150,20 +153,46 @@ void Part::RenderCollisionCircles(Camera &cam, const Transform &transform)
 
 void Part::RenderConnectors(Camera &cam, const Transform &transform, Connector *selected)
 {
-	RenderColour("hud3");
-
 	for(const auto & connector : connectors)
 	{
 		glm::vec2 connector_pos{connector.x, connector.y};
 
 		const glm::vec2 world_pos = transform.GetWorldPosition(connector_pos);
 
-		if (selected == &connector) RenderColour("hud2");
+		if (selected == &connector)
+		{
+			if (connector.is_connected)
+				RenderColour("connector_red");
+			else
+				RenderColour("connector_green");
+		}
+		else
+		{
+			if (connector.is_connected)
+				RenderColour("connector_grey");
+			else
+				RenderColour("connector_white");
+		}
+
 
 		RenderCircleRotated(cam, world_pos.x, world_pos.y, 16.0f, transform.GetWorldRotation(connector.rot));
-
-		if (selected == &connector) RenderColour("hud3");
 
 	}
 }
 
+
+void Part::SetIslandRecursive(int island_no)
+{
+	if (island != 0) return;
+
+	island = island_no;
+
+	for(auto &c : connectors)
+	{
+		if (not c.is_connected) continue;
+		Part * p = c.connects_to;
+		assert(p);
+
+		p->SetIslandRecursive(island_no);
+	}
+}
