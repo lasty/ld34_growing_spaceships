@@ -10,6 +10,7 @@
 
 #include "assets.h"
 #include "ship.h"
+#include "render.h"
 
 
 Game::Game()
@@ -32,21 +33,71 @@ void Game::Update(float dt)
 
 void Game::OnInput(SDL_Event &event)
 {
-	if (event.type == SDL_KEYDOWN)
-	{
-		if (event.key.keysym.sym == SDLK_w) world_cam.SetOffsetRelative(0, 10.0f);
-		if (event.key.keysym.sym == SDLK_s) world_cam.SetOffsetRelative(0, -10.0f);
-		if (event.key.keysym.sym == SDLK_a) world_cam.SetOffsetRelative(10.0f, 0);
-		if (event.key.keysym.sym == SDLK_d) world_cam.SetOffsetRelative(-10.0f, 0);
+	if (event.type == SDL_KEYDOWN) OnKeyDown(event.key.keysym.sym);
+	if (event.type == SDL_KEYUP) OnKeyUp(event.key.keysym.sym);
 
-		if (event.key.keysym.sym == SDLK_KP_PLUS) world_cam.SetZoomRelative(0.25f);
-		if (event.key.keysym.sym == SDLK_KP_MINUS) world_cam.SetZoomRelative(-0.25f);
-	}
+	if (event.type == SDL_MOUSEMOTION) OnMouseMove(event.motion.x, event.motion.y);
+	if (event.type == SDL_MOUSEBUTTONDOWN) OnMouseDown(event.button.x, event.button.y, event.button.button);
+	if (event.type == SDL_MOUSEBUTTONUP) OnMouseUp(event.button.x, event.button.y, event.button.button);
+
+	if (event.type == SDL_MOUSEWHEEL) OnMouseWheel(event.wheel.y);
+
+}
+
+void Game::OnKeyDown(SDL_Keycode key)
+{
+	if (key == SDLK_w) world_cam.SetOffsetRelative(0, 10.0f);
+	if (key == SDLK_s) world_cam.SetOffsetRelative(0, -10.0f);
+	if (key == SDLK_a) world_cam.SetOffsetRelative(10.0f, 0);
+	if (key == SDLK_d) world_cam.SetOffsetRelative(-10.0f, 0);
+
+	if (key == SDLK_KP_PLUS) world_cam.SetZoomRelative(0.25f);
+	if (key == SDLK_KP_MINUS) world_cam.SetZoomRelative(-0.25f);
+}
+
+
+void Game::OnKeyUp(SDL_Keycode key)
+{
+
+}
+
+
+void Game::SetMouseCursor(int x, int y)
+{
+	mouse_cursor = {x, y};
+	mouse_world_cursor = world_cam.ScreenToWorld(x, y);
+}
+
+void Game::OnMouseMove(int x, int y)
+{
+	SetMouseCursor(x, y);
+
+}
+
+
+void Game::OnMouseDown(int x, int y, int button)
+{
+	SetMouseCursor(x, y);
+}
+
+
+void Game::OnMouseUp(int x, int y, int button)
+{
+	SetMouseCursor(x, y);
+}
+
+
+void Game::OnMouseWheel(int y)
+{
+	world_cam.SetZoomRelative(0.20f * -y);
+	SetMouseCursor(mouse_cursor.x, mouse_cursor.y);
+
 }
 
 
 void Game::Render()
 {
+	RenderColour("background");
 	SDL_RenderClear(RENDERER);
 
 
@@ -65,6 +116,15 @@ void Game::Render()
 	//s.Render(cam, 0.0f, -64.0f, rot);
 
 
+	RenderColour("hud1");
+	//s.Render_Simple(mouse_cursor.x, mouse_cursor.y);
+
+	RenderLine(screen_cam, mouse_cursor.x - 10, mouse_cursor.y, mouse_cursor.x + 10, mouse_cursor.y);
+	RenderLine(screen_cam, mouse_cursor.x, mouse_cursor.y - 10, mouse_cursor.x, mouse_cursor.y + 10);
+
+
+	RenderCircle(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 64.0f);
+	s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
 
 	SDL_RenderPresent(RENDERER);
 }
@@ -73,5 +133,7 @@ void Game::Render()
 void Game::ResizeWindow(int w, int h)
 {
 	world_cam.ViewPort(0, 0, w, h);
+
+	screen_cam.SetToScreen(0, 0, w, h);
 }
 

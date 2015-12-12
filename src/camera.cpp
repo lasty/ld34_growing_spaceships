@@ -57,6 +57,21 @@ void Camera::ViewPort(int x, int y, int w, int h)
 }
 
 
+void Camera::SetToScreen(int x, int y, int w, int h)
+{
+	//ViewPort(x, y, w, h);
+	//projection_matrix = glm::ortho(x, x+w, -y+h, y);
+
+	camera_matrix = glm::mat4{};
+	projection_matrix = glm::mat4{};
+
+	viewport_size.x = 1.0f;
+	viewport_size.y = 1.0f;
+	viewport_offset.x = 0.0f;
+	viewport_offset.y = 0.0f;
+}
+
+
 void Camera::CalcMatrixes()
 {
 	float xsize = viewport_size.x * zoom;
@@ -67,17 +82,19 @@ void Camera::CalcMatrixes()
 
 	camera_matrix = glm::translate( glm::mat4{}, glm::vec3{ offset.x, offset.y, 0.0f } );
 
+	//precalculate inverse matrix for screen to world
+	glm::mat4 proj_cam_matrix = projection_matrix * camera_matrix;
+	inverse_matrix = glm::inverse(proj_cam_matrix);
 }
 
 
 SDL_Point Camera::WorldToScreen(float x, float y)
 {
+	//transforms to normalized device coordinates (-1, -1 to +1, +1)
 	glm::vec4 p{x, y, 0.0f, 1.0f};
-
-	//p = camera_matrix * projection_matrix * p;
 	p = projection_matrix * camera_matrix * p;
 
-
+	//convert to physical screen coordinates
 	p.x = p.x * viewport_size.x + (viewport_size.x / 2.0f);
 	p.y = p.y * viewport_size.y + (viewport_size.y / 2.0f);
 
@@ -94,10 +111,19 @@ SDL_Rect Camera::WorldToScreen(float x, float y, float w, float h)
 	w = position2.x - position.x;
 	h = position2.y - position.y;
 
-	//w = p.x;
-	//h = p.y;
-
 	return SDL_Rect{position.x, position.y, int(w), int(h)};
 }
 
 
+glm::vec2 Camera::ScreenToWorld(int x, int y)
+{
+	//convert screen coordinates to normalized device coordinates
+	glm::vec4 p {0.0f, 0.0f, 0.0f, 1.0f};
+	p.x = (x - (viewport_size.x / 2.0f)) / viewport_size.x;
+	p.y = (y - (viewport_size.y / 2.0f)) / viewport_size.y;
+
+	//apply inverse projection matrix
+	p = inverse_matrix * p;
+
+	return glm::vec2{p.x, p.y};
+}

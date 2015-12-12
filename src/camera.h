@@ -35,6 +35,7 @@ private:
 
 	glm::mat4 camera_matrix;
 	glm::mat4 projection_matrix;
+	glm::mat4 inverse_matrix;
 
 	glm::vec2 viewport_offset;
 	glm::vec2 viewport_size;
@@ -51,6 +52,7 @@ public:
 
 	void CalcMatrixes();
 
+	void SetToScreen(int x, int y, int w, int h);
 
 	void ViewPort(int x, int y, int w, int h);
 
@@ -58,6 +60,8 @@ public:
 	SDL_Point WorldToScreen(float x, float y);
 	SDL_Rect WorldToScreen(float x, float y, float w, float h);
 
+
+	glm::vec2 ScreenToWorld(int x, int y);
 
 };
 
