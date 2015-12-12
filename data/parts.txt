@@ -1,0 +1,9 @@
+core core 32
+0
+
+scaffold scaffold 32
+0
+
+pointy pointy 32
+0
+

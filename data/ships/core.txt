@@ -1,0 +1,4 @@
+core_only
+1
+core 0.0 0.0
+

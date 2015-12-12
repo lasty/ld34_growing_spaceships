@@ -8,6 +8,7 @@
 
 #include "sprite.h"
 #include "globals.h"
+#include "part.h"
 
 #include <map>
 
@@ -24,6 +25,7 @@ private:
 
 	std::map<std::string, Sprite> sprite_list;
 
+	std::map<std::string, Part> part_list;
 
 public:
 

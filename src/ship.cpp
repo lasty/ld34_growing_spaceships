@@ -3,19 +3,44 @@
 //
 
 #include "ship.h"
+#include "globals.h"
 
+#include <fstream>
 
 Ship::Ship()
 {
 	AddPart("core", 0.0f, 0.0f);
-	AddPart("scaffold", 0.0f, -64.0f);
-	AddPart("pointy", 0.0f, -128.0f);
+}
 
-	AddPart("scaffold", -64.0f, 0.0f);
-	AddPart("scaffold", 64.0f, 0.0f);
 
-	AddPart("scaffold", -64.0f, 64.0f);
-	AddPart("scaffold", 64.0f, 64.0f);
+Ship::Ship(const std::string &ship_type)
+{
+	std::string prefix = DATA_PATH + "ships/";
+
+	std::ifstream in { prefix + ship_type + ".txt" };
+
+	assert(in);
+
+
+	std::string name;
+	in >> name;
+
+	int num_parts;
+	in >> num_parts;
+
+	for (int i=0; i < num_parts; i++)
+	{
+		std::string part_name;
+		float x;
+		float y;
+
+		in >> part_name >> x >> y;
+
+		if (in.eof() or in.bad()) break;
+
+		AddPart(part_name, x, y);
+	}
+
 }
 
 

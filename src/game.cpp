@@ -14,6 +14,7 @@
 
 
 Game::Game()
+: ship("ship_one")
 {
 	assert(RENDERER);
 

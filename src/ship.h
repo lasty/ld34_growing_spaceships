@@ -17,6 +17,7 @@ class Ship
 {
 public:
 	Ship();
+	Ship(const std::string &ship_type);
 
 private:
 
