@@ -16,6 +16,7 @@ Assets::Assets()
 
 	assert(ASSETS == nullptr);
 
+	//Early Setup
 
 	SetupSurfaces();
 
@@ -23,6 +24,11 @@ Assets::Assets()
 
 
 	ASSETS = this;
+
+	//Deferred Setup  (Requires ASSETS to be set)
+
+	SetupParts();
+
 }
 
 
@@ -86,6 +92,27 @@ void Assets::SetupSprites()
 }
 
 
+void Assets::SetupParts()
+{
+	std::ifstream in{DATA_PATH + "parts.txt"};
+	assert(in);
+
+	while (in and in.good())
+	{
+		std::string name;
+
+		in >> name;
+
+		if (in.bad() or in.eof() or name.empty()) break;
+		std::cout << "part name: " << name << std::endl;
+
+		part_list.emplace(name, Part{in});
+	}
+}
+
+
+
+
 Surface &Assets::GetSurface(const std::string &name)
 {
 	return surface_list.at(name);
@@ -95,4 +122,10 @@ Surface &Assets::GetSurface(const std::string &name)
 Sprite &Assets::GetSprite(const std::string &name)
 {
 	return sprite_list.at(name);
+}
+
+
+Part &Assets::GetPart(const std::string &name)
+{
+	return part_list.at(name);
 }

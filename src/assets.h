@@ -21,6 +21,8 @@ private:
 	void SetupSurfaces();
 	void SetupSprites();
 
+	void SetupParts();
+
 	std::map<std::string, Surface> surface_list;
 
 	std::map<std::string, Sprite> sprite_list;
@@ -33,6 +35,7 @@ public:
 
 	Sprite & GetSprite(const std::string &name);
 
+	Part & GetPart(const std::string &name);
 };
 
 

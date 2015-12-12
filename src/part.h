@@ -10,6 +10,8 @@
 #include "sprite.h"
 #include "transform.h"
 
+#include <fstream>
+#include <vector>
 
 class Connector
 {
@@ -17,10 +19,28 @@ class Connector
 };
 
 
+class CollisionCircle
+{
+public:
+	CollisionCircle(float x, float y, float radius)
+	: x{x}, y{y}, radius{radius}
+	{ }
+
+public:
+	float x = 0.0f;
+	float y = 0.0f;
+	float radius = 0.0f;
+};
+
+
+
 class Part
 {
 public:
-	Part(const std::string &part_name, float x, float y);
+	Part(std::ifstream &in);
+
+	Part(const Part &copy, float x, float y);
+
 
 private:
 
@@ -29,12 +49,15 @@ private:
 
 	Sprite * sprite_ref = nullptr;
 
+	std::vector<CollisionCircle> collision_circles;
 
 public:
 
 	void Render(Camera &cam, const Transform & ship_transform);
 
 	void RenderSelected(Camera &cam, const Transform & ship_transform);
+
+	void RenderCollisionCircles(Camera &cam, const Transform &transform);
 
 
 	float GetDistanceFrom(const glm::vec2 &point, const Transform &ship_transform) const;

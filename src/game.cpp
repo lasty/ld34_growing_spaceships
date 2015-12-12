@@ -27,10 +27,15 @@ Game::Game()
 
 void Game::Update(float dt)
 {
-	rot += dt * 36.0f;
+	if (rotating)
+	{
+		rot += dt * 36.0f;
 
-	//ship.GetTransform().SetRotation(rot);
-	//ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
+		ship.GetTransform().SetRotation(rot);
+	}
+
+
+	if (translating) ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
 
 	ship.SetPartCursor(mouse_world_cursor);
 
@@ -58,6 +63,9 @@ void Game::OnKeyDown(SDL_Keycode key)
 
 	if (key == SDLK_KP_PLUS) world_cam.SetZoomRelative(0.25f);
 	if (key == SDLK_KP_MINUS) world_cam.SetZoomRelative(-0.25f);
+
+	if (key == SDLK_r) rotating = not rotating;
+	if (key == SDLK_t) translating = not translating;
 }
 
 

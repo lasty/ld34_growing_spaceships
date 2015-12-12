@@ -5,7 +5,10 @@
 #include "ship.h"
 #include "globals.h"
 
+#include "assets.h"
+
 #include <fstream>
+
 
 Ship::Ship()
 {
@@ -46,7 +49,7 @@ Ship::Ship(const std::string &ship_type)
 
 void Ship::AddPart(const std::string &partname, float x, float y)
 {
-	std::unique_ptr<Part> part = std::unique_ptr<Part>{ new Part{partname, x, y} };
+	std::unique_ptr<Part> part = std::unique_ptr<Part>{ new Part{ ASSETS->GetPart(partname), x, y} };
 	part_list.push_back(std::move(part));
 
 	InvalidateCursor();

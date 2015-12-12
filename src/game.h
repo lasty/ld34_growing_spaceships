@@ -23,6 +23,9 @@ private:
 
 	float rot = 0.0f;
 
+	bool rotating = true;
+	bool translating = false;
+
 	glm::ivec2 mouse_cursor;
 	glm::vec2 mouse_world_cursor;
 

@@ -1,9 +1,15 @@
-core core 32
-0
+core core
+1
+0.0 0.0 32.0
 
-scaffold scaffold 32
-0
 
-pointy pointy 32
-0
+scaffold scaffold
+1
+0.0 0.0 32.0
+
+
+pointy pointy
+2
+0.0 0.0 16.0
+0.0 16.0 16.0
 
