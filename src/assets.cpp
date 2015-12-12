@@ -36,7 +36,9 @@ void Assets::SetupSprites()
 
 	Surface & sprite1 = GetSurface("sprite1");
 
-	sprite_list.emplace("scaffold", Sprite{sprite1, 0, 0, 32, 32, 2});
+	sprite_list.emplace("pointy", Sprite{sprite1, 0, 0, 32, 32, 2});
+	sprite_list.emplace("core", Sprite{sprite1, 32, 0, 32, 32, 2});
+	sprite_list.emplace("scaffold", Sprite{sprite1, 0, 32, 32, 32, 2});
 
 }
 

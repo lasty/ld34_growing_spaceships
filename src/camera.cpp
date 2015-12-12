@@ -24,8 +24,8 @@ void Camera::SetOffset(float x, float y)
 
 void Camera::SetOffsetRelative(float x, float y)
 {
-	offset.x -= x;
-	offset.y -= y;
+	offset.x += x;
+	offset.y += y;
 
 	SetOffset(offset.x, offset.y);
 }

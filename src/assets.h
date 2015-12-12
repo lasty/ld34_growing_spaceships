@@ -24,6 +24,7 @@ private:
 
 	std::map<std::string, Sprite> sprite_list;
 
+
 public:
 
 	Surface & GetSurface(const std::string &name);

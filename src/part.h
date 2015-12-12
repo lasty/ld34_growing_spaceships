@@ -11,6 +11,12 @@
 #include "transform.h"
 
 
+class Connector
+{
+
+};
+
+
 class Part
 {
 public:
@@ -27,6 +33,11 @@ private:
 public:
 
 	void Render(Camera &cam, const Transform & ship_transform);
+
+	void RenderSelected(Camera &cam, const Transform & ship_transform);
+
+
+	float GetDistanceFrom(const glm::vec2 &point, const Transform &ship_transform) const;
 
 };
 

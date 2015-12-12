@@ -47,9 +47,18 @@ void Transform::SetPositionRelative(float x, float y)
 void Transform::CalcMatrix()
 {
 	glm::mat4 translate_matrix = glm::translate( glm::mat4{}, position );
-	glm::mat4 rot_matrix = glm::rotate( glm::mat4{}, glm::radians(rot), glm::vec3{0.0f, 0.0f, -1.0f} );
+	glm::mat4 rot_matrix = glm::rotate( glm::mat4{}, glm::radians(rot), glm::vec3{0.0f, 0.0f, 1.0f} );
 
 	transform_matrix = translate_matrix * rot_matrix;
+	//transform_matrix = rot_matrix * translate_matrix;
 }
 
 
+glm::vec2 Transform::GetWorldPosition(const glm::vec2 &offset) const
+{
+	glm::vec4 p { offset.x, offset.y, 0.0f, 1.0f};
+
+	p = transform_matrix * p;
+
+	return {p.x, p.y};
+}

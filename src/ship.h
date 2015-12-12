@@ -31,6 +31,14 @@ public:
 	void Render(Camera &cam);
 
 
+	void SetPartCursor(glm::vec2 cursor);
+	void SetConnectorCursor(glm::vec2 cursor);
+
+	Part * part_cursor = nullptr;
+	Connector * connector_cursor = nullptr;
+
+	void InvalidateCursor();
+
 	Transform & GetTransform() { return ship_transform; }
 	const Transform & GetTransform() const { return ship_transform; }
 

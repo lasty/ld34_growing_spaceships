@@ -23,11 +23,15 @@ Game::Game()
 
 }
 
+
 void Game::Update(float dt)
 {
 	rot += dt * 36.0f;
 
-	ship.GetTransform().SetRotation(rot);
+	//ship.GetTransform().SetRotation(rot);
+	//ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
+
+	ship.SetPartCursor(mouse_world_cursor);
 
 }
 
@@ -71,7 +75,6 @@ void Game::SetMouseCursor(int x, int y)
 void Game::OnMouseMove(int x, int y)
 {
 	SetMouseCursor(x, y);
-
 }
 
 
@@ -108,13 +111,6 @@ void Game::Render()
 
 	ship.Render(world_cam);
 
-	//rot = 0;
-	//s.Render(cam, 0.0f, 0.0f, rot);
-	//s.Render(cam, 64.0f, 0.0f, rot);
-	//s.Render(cam, -64.0f, 0.0f, rot);
-	//s.Render(cam, 0.0f, 64.0f, rot);
-	//s.Render(cam, 0.0f, -64.0f, rot);
-
 
 	RenderColour("hud1");
 	//s.Render_Simple(mouse_cursor.x, mouse_cursor.y);
@@ -123,8 +119,8 @@ void Game::Render()
 	RenderLine(screen_cam, mouse_cursor.x, mouse_cursor.y - 10, mouse_cursor.x, mouse_cursor.y + 10);
 
 
-	RenderCircle(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 64.0f);
-	s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
+	//RenderCircle(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 64.0f);
+	//s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
 
 	SDL_RenderPresent(RENDERER);
 }
