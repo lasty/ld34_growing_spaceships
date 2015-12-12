@@ -50,5 +50,6 @@ void RenderColour(const std::string &col_name)
 	if (col_name == "background") RenderColour(10, 20, 30, 255);
 	if (col_name == "hud1") RenderColour(128, 128, 255, 255);
 	if (col_name == "hud2") RenderColour(255, 32, 32, 255);
+	if (col_name == "hud3") RenderColour(192, 192, 192, 255);
 
 }

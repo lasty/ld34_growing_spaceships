@@ -1,0 +1,7 @@
+pointy
+5
+core 0.0 0.0 0.0
+pointy 0.0 128.0 180
+pointy 0.0 -128.0 0
+pointy 64.0 0.0 90
+pointy -64.0 0.0 -90

@@ -12,7 +12,7 @@
 
 Ship::Ship()
 {
-	AddPart("core", 0.0f, 0.0f);
+	AddPart("core", 0.0f, 0.0f, 0.0f);
 }
 
 
@@ -36,20 +36,21 @@ Ship::Ship(const std::string &ship_type)
 		std::string part_name;
 		float x;
 		float y;
+		float rot;
 
-		in >> part_name >> x >> y;
+		in >> part_name >> x >> y >> rot;
 
 		if (in.eof() or in.bad()) break;
 
-		AddPart(part_name, x, y);
+		AddPart(part_name, x, y, rot);
 	}
 
 }
 
 
-void Ship::AddPart(const std::string &partname, float x, float y)
+void Ship::AddPart(const std::string &partname, float x, float y, float rot)
 {
-	std::unique_ptr<Part> part = std::unique_ptr<Part>{ new Part{ ASSETS->GetPart(partname), x, y} };
+	std::unique_ptr<Part> part = std::unique_ptr<Part>{ new Part{ ASSETS->GetPart(partname), x, y, rot} };
 	part_list.push_back(std::move(part));
 
 	InvalidateCursor();

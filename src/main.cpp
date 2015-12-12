@@ -185,6 +185,16 @@ void RunGameLoop()
 				case SDL_QUIT:
 					running = false;
 					break;
+
+				case SDL_WINDOWEVENT:
+					switch(event.window.event)
+					{
+						case SDL_WINDOWEVENT_RESIZED:
+							game.ResizeWindow(event.window.data1, event.window.data2);
+							break;
+
+					}
+					break;
 			}
 		}
 

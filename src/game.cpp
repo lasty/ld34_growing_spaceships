@@ -15,6 +15,8 @@
 
 Game::Game()
 : ship("ship_one")
+//: ship("pointy")
+//: ship("core")
 {
 	assert(RENDERER);
 
@@ -41,6 +43,7 @@ void Game::Update(float dt)
 
 }
 
+
 void Game::OnInput(SDL_Event &event)
 {
 	if (event.type == SDL_KEYDOWN) OnKeyDown(event.key.keysym.sym);
@@ -53,6 +56,7 @@ void Game::OnInput(SDL_Event &event)
 	if (event.type == SDL_MOUSEWHEEL) OnMouseWheel(event.wheel.y);
 
 }
+
 
 void Game::OnKeyDown(SDL_Keycode key)
 {

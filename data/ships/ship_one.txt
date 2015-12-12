@@ -1,9 +1,9 @@
 ship_one
 7
-core 0.0 0.0
-scaffold 0.0 -64.0
-pointy 0.0 -128.0
-scaffold -64.0 0.0
-scaffold 64.0 0.0
-scaffold -64.0 64.0
-scaffold 64.0 64.0
+core 0.0 0.0 0.0
+scaffold 0.0 -64.0 0.0
+pointy 0.0 -128.0 0.0
+scaffold -64.0 0.0 0.0
+scaffold 64.0 0.0 0.0
+scaffold -64.0 64.0 0.0
+scaffold 64.0 64.0 0.0

@@ -15,7 +15,14 @@
 
 class Connector
 {
+public:
+	Connector(float x, float y, float rot)
+	: x{x}, y{y}, rot{rot}
+	{ }
 
+	float x = 0.0f;
+	float y = 0.0f;
+	float rot = 0.0f;
 };
 
 
@@ -39,7 +46,7 @@ class Part
 public:
 	Part(std::ifstream &in);
 
-	Part(const Part &copy, float x, float y);
+	Part(const Part &copy, float x, float y, float rot);
 
 
 private:
@@ -51,6 +58,8 @@ private:
 
 	std::vector<CollisionCircle> collision_circles;
 
+	std::vector<Connector> connectors;
+
 public:
 
 	void Render(Camera &cam, const Transform & ship_transform);
@@ -58,6 +67,7 @@ public:
 	void RenderSelected(Camera &cam, const Transform & ship_transform);
 
 	void RenderCollisionCircles(Camera &cam, const Transform &transform);
+	void RenderConnectors(Camera &cam, const Transform &transform, Connector *selected);
 
 
 	float GetDistanceFrom(const glm::vec2 &point, const Transform &ship_transform) const;

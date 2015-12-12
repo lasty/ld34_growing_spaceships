@@ -27,7 +27,7 @@ private:
 
 public:
 
-	void AddPart(const std::string &partname, float x, float y);
+	void AddPart(const std::string &partname, float x, float y, float rot);
 
 	void Render(Camera &cam);
 
