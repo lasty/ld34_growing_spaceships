@@ -142,7 +142,7 @@ void RunGameLoop()
 	auto win_flags = SDL_WINDOW_RESIZABLE;
 
 	auto window = std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>
-	{SDL_CreateWindow("LD33 Monster", 50, 50, 1200, 800, win_flags), SDL_DestroyWindow};
+	{SDL_CreateWindow("LD34", 50, 50, 1200, 800, win_flags), SDL_DestroyWindow};
 
 	CreateRenderer(window.get());
 

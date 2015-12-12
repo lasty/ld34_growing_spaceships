@@ -17,8 +17,8 @@ void RenderCircle(Camera &cam, float x, float y, float radius)
 	const int segments = 32;
 	for (int i = 0; i <= segments; i++)
 	{
-		float r1 = (i/float(segments) * 2 * 3.1415f);
-		float r2 = ((i+1) / float(segments) * 2 * 3.1415f);
+		float r1 = (i/float(segments) * glm::radians(360.0f));
+		float r2 = ((i+1) / float(segments) * glm::radians(360.0f));
 
 		float x1 = x + glm::cos(r1) * radius;
 		float y1 = y + glm::sin(r1) * radius;
@@ -35,7 +35,6 @@ void RenderCircleRotated(Camera &cam, float x, float y, float radius, float rot)
 {
 	RenderCircle(cam, x, y, radius - 1);
 	RenderCircle(cam, x, y, radius);
-	//RenderCircle(cam, x, y, radius + 1);
 
 	for (int i = -3; i <= 3; i++)
 	{
@@ -45,6 +44,7 @@ void RenderCircleRotated(Camera &cam, float x, float y, float radius, float rot)
 		RenderLine(cam, x, y, x2, y2);
 	}
 }
+
 
 void RenderLine(Camera &cam, float x1, float y1, float x2, float y2)
 {
