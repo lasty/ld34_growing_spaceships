@@ -69,8 +69,14 @@ public:
 	void RenderCollisionCircles(Camera &cam, const Transform &transform);
 	void RenderConnectors(Camera &cam, const Transform &transform, Connector *selected);
 
+	std::vector<Connector> & GetConnectors() { return connectors; }
+	Connector & GetConnector(int i) { return connectors.at(i); }
 
-	float GetDistanceFrom(const glm::vec2 &point, const Transform &ship_transform) const;
+	const glm::vec2 & GetOffset() const { return offset; }
+
+	void SetOffset(const glm::vec2 &new_offset) { offset = new_offset; }
+
+	float GetRot() const { return rot; }
 
 };
 

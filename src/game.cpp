@@ -41,6 +41,8 @@ void Game::Update(float dt)
 
 	ship.SetPartCursor(mouse_world_cursor);
 
+	ship.SetConnectorCursor(mouse_world_cursor);
+
 }
 
 
@@ -94,6 +96,11 @@ void Game::OnMouseMove(int x, int y)
 void Game::OnMouseDown(int x, int y, int button)
 {
 	SetMouseCursor(x, y);
+
+	if (button == 1) AttachPartToShip("scaffold");
+	else if (button == 3) AttachPartToShip("pointy");
+	else if (button == 2) AttachPartToShip("core");
+
 }
 
 
@@ -146,3 +153,9 @@ void Game::ResizeWindow(int w, int h)
 	screen_cam.SetToScreen(0, 0, w, h);
 }
 
+
+
+void Game::AttachPartToShip(const std::string &part_def)
+{
+	ship.AttachPartAtCursor(part_def);
+}

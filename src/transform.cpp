@@ -62,3 +62,8 @@ glm::vec2 Transform::GetWorldPosition(const glm::vec2 &offset) const
 
 	return {p.x, p.y};
 }
+
+float Transform::GetWorldRotation(float rot) const
+{
+	return rot + this->rot;
+}

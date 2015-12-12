@@ -8,6 +8,7 @@
 #include "assets.h"
 
 #include <fstream>
+#include <glm/detail/func_geometric.hpp>
 
 
 Ship::Ship()
@@ -66,6 +67,7 @@ void Ship::Render(Camera &cam)
 		if (part_cursor == part.get())
 		{
 			part->RenderSelected(cam, ship_transform);
+			part->RenderConnectors(cam, ship_transform, connector_cursor);
 		}
 	}
 }
@@ -74,6 +76,7 @@ void Ship::Render(Camera &cam)
 void Ship::InvalidateCursor()
 {
 	part_cursor = nullptr;
+	connector_cursor = nullptr;
 }
 
 
@@ -89,7 +92,9 @@ void Ship::SetPartCursor(glm::vec2 cursor)
 
 	for (auto & part : part_list)
 	{
-		float dist = part->GetDistanceFrom(cursor, ship_transform);
+		const glm::vec2 this_part_world_pos = ship_transform.GetWorldPosition(part->GetOffset());
+		float dist = glm::distance(this_part_world_pos, cursor);
+
 		if (not part_cursor or (dist < dist_min))
 		{
 			dist_min = dist;
@@ -100,4 +105,51 @@ void Ship::SetPartCursor(glm::vec2 cursor)
 	if (dist_min >= 100.0f) part_cursor = nullptr;
 }
 
+
+void Ship::SetConnectorCursor(glm::vec2 cursor)
+{
+	connector_cursor = nullptr;
+	if (not part_cursor) return;
+
+	float dist_min = 100.0f;
+
+	for (auto & connector : part_cursor->GetConnectors())
+	{
+		const glm::vec2 connector_world_pos = ship_transform.GetWorldPosition({connector.x, connector.y});
+		float dist = glm::distance(cursor, connector_world_pos);
+
+		if (not connector_cursor or (dist < dist_min))
+		{
+			dist_min = dist;
+			connector_cursor = &connector;
+		}
+	}
+
+	if (dist_min >= 100.0f) connector_cursor = nullptr;
+
+}
+
+
+void Ship::AttachPartAtCursor(const std::string &partname)
+{
+	if (not part_cursor) return;
+	if (not connector_cursor) return;
+
+	glm::vec2 part_loc = {connector_cursor->x, connector_cursor->y};
+	float part_rot = connector_cursor->rot;
+
+	std::unique_ptr<Part> dummy_part = std::unique_ptr<Part>{ new Part{ ASSETS->GetPart(partname), 0.0f, 0.0f, part_rot} };
+
+	Connector &other_connector = dummy_part->GetConnector(0);
+
+	glm::vec2 other_part_loc = {other_connector.x, other_connector.y};
+
+	glm::vec2 new_loc = part_loc - other_part_loc;
+	float new_rot = connector_cursor->rot;
+
+	//part_list.push_back(std::move(dummy_part));
+	//InvalidateCursor();
+
+	AddPart(partname, new_loc.x, new_loc.y, new_rot);
+}
 

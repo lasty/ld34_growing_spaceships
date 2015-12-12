@@ -29,11 +29,14 @@ public:
 
 	void AddPart(const std::string &partname, float x, float y, float rot);
 
+
 	void Render(Camera &cam);
 
 
 	void SetPartCursor(glm::vec2 cursor);
 	void SetConnectorCursor(glm::vec2 cursor);
+
+	void AttachPartAtCursor(const std::string &partname);
 
 	Part * part_cursor = nullptr;
 	Connector * connector_cursor = nullptr;

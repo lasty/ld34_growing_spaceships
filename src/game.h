@@ -53,6 +53,10 @@ public:
 
 	void ResizeWindow(int w, int h);
 
+
+
+	void AttachPartToShip(const std::string &part_def);
+
 };
 
 

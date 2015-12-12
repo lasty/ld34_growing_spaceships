@@ -36,6 +36,7 @@ public:
 	const glm::mat4 & GetMatrix() const { return transform_matrix; }
 
 	glm::vec2 GetWorldPosition(const glm::vec2 &offset) const;
+	float GetWorldRotation(float rot) const;
 
 };
 

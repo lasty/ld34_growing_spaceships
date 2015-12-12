@@ -103,6 +103,8 @@ Part::Part(const Part &copy, float x, float y, float rot)
 		// add the old offset
 		connector.x = newx + x;
 		connector.y = newy + y;
+
+		connector.rot += this->rot;
 	}
 
 }
@@ -124,9 +126,9 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 	const glm::vec2 this_part_world_pos = transform.GetWorldPosition(offset);
 
 	RenderColour("hud1");
-	RenderCircle(cam, this_part_world_pos.x, this_part_world_pos.y, 32);
+	RenderCircleRotated(cam, this_part_world_pos.x, this_part_world_pos.y, 32, transform.GetWorldRotation(rot));
 
-	RenderConnectors(cam, transform, nullptr);
+	//RenderConnectors(cam, transform);
 
 }
 
@@ -158,18 +160,10 @@ void Part::RenderConnectors(Camera &cam, const Transform &transform, Connector *
 
 		if (selected == &connector) RenderColour("hud2");
 
-		RenderCircle(cam, world_pos.x, world_pos.y, 16.0f);
+		RenderCircleRotated(cam, world_pos.x, world_pos.y, 16.0f, transform.GetWorldRotation(connector.rot));
 
 		if (selected == &connector) RenderColour("hud3");
 
 	}
-}
-
-
-float Part::GetDistanceFrom(const glm::vec2 &point, const Transform &ship_transform) const
-{
-	const glm::vec2 this_part_world_pos = ship_transform.GetWorldPosition(offset);
-
-	return glm::distance(this_part_world_pos, point);
 }
 
