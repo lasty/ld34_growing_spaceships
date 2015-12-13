@@ -18,7 +18,7 @@
 
 Ship::Ship()
 {
-	AddPart("core", 0.0f, 0.0f, 0.0f);
+	//AddPart("core", 0.0f, 0.0f, 0.0f);
 }
 
 
@@ -31,9 +31,37 @@ Ship::Ship(const std::string &ship_type)
 	assert(in);
 
 	Deserialize(in);
-
-
 }
+
+
+std::unique_ptr<Ship> Ship::SplitShip()
+{
+	std::unique_ptr<Ship> new_ship { new Ship() };
+	new_ship->GetTransform() = GetTransform();
+
+	for(auto it = part_list.begin(); it != part_list.end(); )
+	{
+		if ((*it)->GetIsland() == 2)
+		{
+			new_ship->part_list.push_back(std::move(*it));
+
+			it = part_list.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+
+	RecalcConnections();
+	RecalcCenterOfGravity();
+
+	new_ship->RecalcConnections();
+	new_ship->RecalcCenterOfGravity();
+
+	return new_ship;
+}
+
 
 
 void Ship::Clear()
@@ -102,12 +130,6 @@ void Ship::AddPart(const std::string &partname, float x, float y, float rot)
 
 void Ship::Render(Camera &cam)
 {
-	RenderColour("hud_selected_part");
-	const auto pos = ship_transform.GetPosition();
-	const auto rot = ship_transform.GetRotation();
-	RenderCircleRotated(cam, pos.x, pos.y, bounding_circle, rot);
-
-
 	for(auto & part : part_list)
 	{
 		part->Render(cam, ship_transform);
@@ -118,6 +140,15 @@ void Ship::Render(Camera &cam)
 			part->RenderConnectors(cam, ship_transform, connector_cursor);
 		}
 	}
+}
+
+
+void Ship::RenderShipSelected(Camera &cam)
+{
+	RenderColour("hud_selected_part");
+	const auto pos = ship_transform.GetPosition();
+	const auto rot = ship_transform.GetRotation();
+	RenderCircleRotated(cam, pos.x, pos.y, bounding_circle, rot);
 }
 
 
@@ -299,21 +330,26 @@ void Ship::RecalcIslands()
 
 void Ship::RecalcCenterOfGravity()
 {
+	//Recalculates center of rotation, and bounding circle
+
 	glm::vec2 center;
+	glm::vec2 world_center;
 	int num = 0;
 
-	for(auto & part : part_list)
+	for(const auto & part : part_list)
 	{
 		if (part->GetIsland() == 1)
 		{
 			center += part->GetOffset();
+			world_center += ship_transform.GetWorldPosition(part->GetOffset());
 			num++;
 		}
 	}
 
-	center /= (float)num;
+	center /= float(num);
+	world_center /= float(num);
 
-	std::cout << "recalculating center, offset is: " << center.x << ", " << center.y << std::endl;
+	//std::cout << "recalculating center, offset is: " << center.x << ", " << center.y << std::endl;
 
 	float max_dist = 1.0f;
 
@@ -332,4 +368,8 @@ void Ship::RecalcCenterOfGravity()
 	}
 
 	bounding_circle = max_dist;
+
+	//transfer offset to world position, so the ship parts stay in the same place
+	ship_transform.SetPosition(world_center.x , world_center.y);
+
 }

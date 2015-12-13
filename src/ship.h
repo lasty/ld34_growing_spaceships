@@ -27,6 +27,8 @@ public:
 	bool ShouldRemove() const;
 	bool ShouldSplit() const { return needs_splitting; }
 
+	std::unique_ptr<Ship> SplitShip();
+
 private:
 
 	std::vector<std::unique_ptr<Part>> part_list;
@@ -45,6 +47,7 @@ public:
 
 
 	void Render(Camera &cam);
+	void RenderShipSelected(Camera &cam);
 
 
 	void SetPartCursor(glm::vec2 cursor);
@@ -61,6 +64,7 @@ public:
 	Transform & GetTransform() { return ship_transform; }
 	const Transform & GetTransform() const { return ship_transform; }
 
+	float GetBoundingCircle() const { return bounding_circle; }
 
 	void RecalcConnections();
 

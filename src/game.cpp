@@ -13,6 +13,7 @@
 #include "render.h"
 
 #include <algorithm>
+#include <glm/geometric.hpp>
 
 Game::Game()
 : player_ship("ship_one")
@@ -84,6 +85,7 @@ void Game::SetMouseCursor(int x, int y)
 	mouse_world_cursor = world_cam.ScreenToWorld(x, y);
 }
 
+
 void Game::OnMouseMove(int x, int y)
 {
 	SetMouseCursor(x, y);
@@ -123,6 +125,7 @@ void Game::Update(float dt)
 		//ship->Update(dt);
 	//}
 
+	CheckForSplitShips();
 
 	CheckForDeadShips();
 
@@ -134,12 +137,22 @@ void Game::Update(float dt)
 		player_ship.GetTransform().SetRotation(rot);
 	}
 
-
 	if (translating) player_ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
 
-	player_ship.SetPartCursor(mouse_world_cursor);
 
+	SetShipCursor();
+
+	if (ship_cursor)
+	{
+		ship_cursor->SetPartCursor(mouse_world_cursor);
+		ship_cursor->SetConnectorCursor(mouse_world_cursor);
+	}
+
+
+	player_ship.SetPartCursor(mouse_world_cursor);
 	player_ship.SetConnectorCursor(mouse_world_cursor);
+
+
 
 }
 
@@ -157,8 +170,16 @@ void Game::Render()
 
 	for(auto &ship : ship_list)
 	{
+		if (ship.get() == ship_cursor)
+		{
+			ship->RenderShipSelected(world_cam);
+		}
+
 		ship->Render(world_cam);
 	}
+
+	if (player_ship.part_cursor)
+		player_ship.RenderShipSelected(world_cam);
 
 	player_ship.Render(world_cam);
 
@@ -195,6 +216,7 @@ void Game::AttachPartToShip(const std::string &part_def)
 void Game::DeleteShipPart()
 {
 	player_ship.DeletePartAtCursor();
+	if (ship_cursor) ship_cursor->DeletePartAtCursor();
 }
 
 
@@ -205,6 +227,7 @@ void Game::SetupLevel()
 	SpawnRandomShip();
 	world_cam.SetZoom(2.0f);
 }
+
 
 void Game::SpawnRandomShip()
 {
@@ -232,7 +255,35 @@ void Game::SpawnShip(const std::string &name, float x, float y, float rot)
 
 void Game::InvalidateShip(Ship *about_to_delete)
 {
-	//TODO remove references, eg cursor
+	//Don't call invalidate cursor here, in case data is already deleted
+	if (ship_cursor == about_to_delete)  ship_cursor = nullptr;
+}
+
+
+void Game::CheckForSplitShips()
+{
+	std::vector<std::unique_ptr<Ship>> new_ship_list;
+
+	for(auto & ship : ship_list)
+	{
+		while (ship->ShouldSplit())
+		{
+			new_ship_list.push_back( ship->SplitShip() );
+		}
+	}
+
+
+	if (player_ship.ShouldSplit())
+	{
+		new_ship_list.push_back( player_ship.SplitShip() );
+	}
+
+
+	for(auto &ship : new_ship_list)
+	{
+		ship_list.push_back(std::move(ship));
+	}
+
 }
 
 
@@ -254,4 +305,43 @@ void Game::CheckForDeadShips()
 		}
 	}
 
+}
+
+
+void Game::InvalidateShipCursor()
+{
+	if (ship_cursor)
+	{
+		ship_cursor->InvalidateCursor();
+	}
+
+	ship_cursor = nullptr;
+}
+
+
+void Game::SetShipCursor()
+{
+	InvalidateShipCursor();
+
+	if (ship_list.size() == 0)
+	{
+		return;
+	}
+
+	float dist_min = 10000.0f;
+
+	for (auto & ship : ship_list)
+	{
+		const glm::vec2 ship_pos { ship->GetTransform().GetPosition().x, ship->GetTransform().GetPosition().y };
+		float dist = glm::distance(ship_pos, mouse_world_cursor);
+
+		if (not ship_cursor or (dist < dist_min))
+		{
+			if (dist < (ship->GetBoundingCircle() + 0))
+			{
+				dist_min = dist;
+				ship_cursor = ship.get();
+			}
+		}
+	}
 }

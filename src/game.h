@@ -33,6 +33,8 @@ private:
 	glm::ivec2 mouse_cursor;
 	glm::vec2 mouse_world_cursor;
 
+	Ship * ship_cursor = nullptr;
+
 public:
 	bool GetRunning() const { return running; }
 
@@ -69,7 +71,14 @@ public:
 
 	void SpawnShip(const std::string &name, float x, float y, float rot);
 
+	void CheckForSplitShips();
+
 	void CheckForDeadShips();
+
+	void SetShipCursor();
+
+	void InvalidateShipCursor();
+
 };
 
 
