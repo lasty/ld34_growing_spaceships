@@ -47,7 +47,7 @@ public:
 class Part
 {
 public:
-	Part(std::ifstream &in);
+	Part(const std::string &name, std::ifstream &in);
 
 	Part(const Part &copy, float x, float y, float rot);
 
@@ -55,6 +55,7 @@ public:
 private:
 
 	int island = 0;
+	std::string part_name;
 
 	glm::vec2 offset;
 	float rot = 0.0f;
@@ -77,9 +78,10 @@ public:
 	std::vector<Connector> & GetConnectors() { return connectors; }
 	Connector & GetConnector(int i) { return connectors.at(i); }
 
+	const std::string & GetName() const { return part_name; }
 	const glm::vec2 & GetOffset() const { return offset; }
 
-	void SetOffset(const glm::vec2 &new_offset) { offset = new_offset; }
+	void SetOffsetRelative(const glm::vec2 &rel_offset);
 
 	float GetRot() const { return rot; }
 

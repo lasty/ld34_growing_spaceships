@@ -1,0 +1,15 @@
+custom_ship_name
+13
+core 9.53674e-007 78.7692 0
+scaffold 9.53674e-007 14.7691 0
+scaffold 64 78.7692 90
+scaffold -64 78.7692 -90
+scaffold -1.90735e-006 142.77 180
+scaffold 9.53674e-007 -49.2309 0
+scaffold 9.53674e-007 -113.231 0
+scaffold 9.53674e-007 -177.23 0
+scaffold 9.53674e-007 -241.23 0
+scaffold 128 78.7692 90
+scaffold -128 78.7692 -90
+scaffold 64 14.7691 90
+scaffold -64 14.7691 -90

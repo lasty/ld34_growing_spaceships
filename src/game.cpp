@@ -14,9 +14,9 @@
 
 
 Game::Game()
-: ship("ship_one")
+//: ship("ship_one")
 //: ship("pointy")
-//: ship("core")
+: ship("core")
 {
 	assert(RENDERER);
 
@@ -72,6 +72,20 @@ void Game::OnKeyDown(SDL_Keycode key)
 
 	if (key == SDLK_r) rotating = not rotating;
 	if (key == SDLK_t) translating = not translating;
+
+
+	if (key == SDLK_F5)
+	{
+		std::ofstream out{DATA_PATH+"/ships/custom.txt", std::ios::trunc};
+		ship.Serialize(out);
+	}
+
+	if (key == SDLK_F9)
+	{
+		std::ifstream in{DATA_PATH+"/ships/custom.txt"};
+		ship.Deserialize(in);
+	}
+
 }
 
 

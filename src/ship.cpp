@@ -11,6 +11,8 @@
 #include <glm/detail/func_geometric.hpp>
 
 #include <algorithm>
+#include <iostream>
+
 
 Ship::Ship()
 {
@@ -26,6 +28,20 @@ Ship::Ship(const std::string &ship_type)
 
 	assert(in);
 
+	Deserialize(in);
+
+
+}
+
+
+void Ship::Clear()
+{
+	part_list.clear();
+}
+
+void Ship::Deserialize(std::istream &in)
+{
+	Clear();
 
 	std::string name;
 	in >> name;
@@ -46,7 +62,25 @@ Ship::Ship(const std::string &ship_type)
 
 		AddPart(part_name, x, y, rot);
 	}
+	RecalcConnections();
 
+}
+
+
+void Ship::Serialize(std::ostream &out)
+{
+	out << "custom_ship_name" << "\n";
+	out << part_list.size() << "\n";
+
+	for (auto & part : part_list)
+	{
+		out << part->GetName() << " ";
+
+		const auto & offset = part->GetOffset();
+		float rot = part->GetRot();
+
+		out << offset.x << " " << offset.y << " " << rot << "\n";
+	}
 }
 
 
@@ -54,11 +88,6 @@ void Ship::AddPart(const std::string &partname, float x, float y, float rot)
 {
 	std::unique_ptr<Part> part = std::unique_ptr<Part>{ new Part{ ASSETS->GetPart(partname), x, y, rot} };
 	part_list.push_back(std::move(part));
-
-	RecalcConnections();
-
-	InvalidateCursor();
-
 }
 
 
@@ -158,6 +187,8 @@ void Ship::AttachPartAtCursor(const std::string &partname)
 	//InvalidateCursor();
 
 	AddPart(partname, new_loc.x, new_loc.y, new_rot);
+	RecalcConnections();
+	RecalcCenterOfGravity();
 }
 
 
@@ -169,6 +200,7 @@ void Ship::DeletePartAtCursor()
 	part_list.erase(it);
 
 	RecalcConnections();
+	RecalcCenterOfGravity();
 }
 
 
@@ -182,8 +214,6 @@ void Ship::RecalcConnections()
 
 	for(auto &part : part_list)
 	{
-		part->SetIsland(0);
-
 		for(auto &connector : part->GetConnectors())
 		{
 			connector.is_connected = false;
@@ -218,17 +248,60 @@ void Ship::RecalcConnections()
 	RecalcIslands();
 }
 
+
 void Ship::RecalcIslands()
 {
 	int island_no = 0;
 
+	//reset all parts to no island
 	for(auto &part : part_list)
 	{
-		island_no++;
+		part->SetIsland(0);
+	}
 
+	//start island 1 from the ships core part, if it has one
+	if (core)
+	{
+		island_no++;
+		core->SetIslandRecursive(island_no);
+	}
+
+	//go through all the other parts, set their island numbers for all connected parts
+	for(auto &part : part_list)
+	{
 		if (part->GetIsland() == 0)
 		{
+			island_no++;
 			part->SetIslandRecursive(island_no);
 		}
+	}
+
+	needs_splitting = (island_no > 1);
+
+	std::cout << "RecalcIslands: found " << island_no << " islands.  (" << part_list.size() << " parts)" << std::endl;
+}
+
+
+void Ship::RecalcCenterOfGravity()
+{
+	glm::vec2 center;
+	int num = 0;
+
+	for(auto & part : part_list)
+	{
+		if (part->GetIsland() == 1)
+		{
+			center += part->GetOffset();
+			num++;
+		}
+	}
+
+	center /= (float)num;
+
+	std::cout << "recalculating center, offset is: " << center.x << ", " << center.y << std::endl;
+
+	for(auto &part : part_list)
+	{
+		part->SetOffsetRelative( -center );
 	}
 }

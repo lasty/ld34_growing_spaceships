@@ -106,7 +106,7 @@ void Assets::SetupParts()
 		if (in.bad() or in.eof() or name.empty()) break;
 		std::cout << "part name: " << name << std::endl;
 
-		part_list.emplace(name, Part{in});
+		part_list.emplace(name, Part{name, in});
 	}
 }
 

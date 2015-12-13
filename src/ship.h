@@ -19,9 +19,18 @@ public:
 	Ship();
 	Ship(const std::string &ship_type);
 
+	void Deserialize(std::istream &in);
+	void Serialize(std::ostream &out);
+
+	void Clear();
+
 private:
 
 	std::vector<std::unique_ptr<Part>> part_list;
+	Part * core = nullptr;
+
+	bool needs_splitting = false;
+
 
 	Transform ship_transform;
 
@@ -51,6 +60,8 @@ public:
 	void RecalcConnections();
 
 	void RecalcIslands();
+
+	void RecalcCenterOfGravity();
 
 };
 

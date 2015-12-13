@@ -10,8 +10,10 @@
 
 #include <iostream>
 
-Part::Part(std::ifstream &in)
+Part::Part(const std::string &name, std::ifstream &in)
 {
+	part_name = name;
+
 	std::string sprite_name;
 	in >> sprite_name;
 	std::cout << "part sprite name: " << sprite_name << std::endl;
@@ -64,6 +66,7 @@ Part::Part(std::ifstream &in)
 
 Part::Part(const Part &copy, float x, float y, float rot)
 {
+	part_name = copy.part_name;
 	sprite_ref = copy.sprite_ref;
 	offset = copy.offset;
 	this->rot = copy.rot;
@@ -178,6 +181,18 @@ void Part::RenderConnectors(Camera &cam, const Transform &transform, Connector *
 		RenderCircleRotated(cam, world_pos.x, world_pos.y, 16.0f, transform.GetWorldRotation(connector.rot));
 
 	}
+}
+
+
+void Part::SetOffsetRelative(const glm::vec2 &rel_offset)
+{
+	for (auto & conn : connectors)
+	{
+		conn.x += rel_offset.x;
+		conn.y += rel_offset.y;
+	}
+
+	offset += rel_offset;
 }
 
 
