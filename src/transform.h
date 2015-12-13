@@ -31,6 +31,8 @@ public:
 	void SetPosition(float x, float y);
 	void SetPositionRelative(float x, float y);
 
+	const glm::vec3 & GetPosition() const { return position; };
+
 	void CalcMatrix();
 
 	const glm::mat4 & GetMatrix() const { return transform_matrix; }

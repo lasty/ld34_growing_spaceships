@@ -78,6 +78,8 @@ public:
 	std::vector<Connector> & GetConnectors() { return connectors; }
 	Connector & GetConnector(int i) { return connectors.at(i); }
 
+	std::vector<CollisionCircle> & GetCollisionCircles() { return collision_circles; }
+
 	const std::string & GetName() const { return part_name; }
 	const glm::vec2 & GetOffset() const { return offset; }
 

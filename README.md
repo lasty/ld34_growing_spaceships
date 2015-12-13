@@ -11,7 +11,7 @@ By Lasty
 Synopsis
 --------
 
-Will be a 2d topdown space shooter, which you can attach more parts to your ship (After you've blown them off enemy ships, of course)
+Will be a 2d topdown space shooter, which you can attach more parts to your player_ship (After you've blown them off enemy ships, of course)
 
 
 Plan Day 1

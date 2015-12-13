@@ -12,37 +12,19 @@
 #include "ship.h"
 #include "render.h"
 
+#include <algorithm>
 
 Game::Game()
-//: ship("ship_one")
-//: ship("pointy")
-: ship("core")
+: player_ship("ship_one")
+//: player_ship("pointy")
+//: player_ship("core")
 {
 	assert(RENDERER);
 
 	assert(GAME == nullptr);
 	GAME = this;
 
-
-}
-
-
-void Game::Update(float dt)
-{
-	if (rotating)
-	{
-		rot += dt * 36.0f;
-
-		ship.GetTransform().SetRotation(rot);
-	}
-
-
-	if (translating) ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
-
-	ship.SetPartCursor(mouse_world_cursor);
-
-	ship.SetConnectorCursor(mouse_world_cursor);
-
+	SetupLevel();
 }
 
 
@@ -72,18 +54,19 @@ void Game::OnKeyDown(SDL_Keycode key)
 
 	if (key == SDLK_r) rotating = not rotating;
 	if (key == SDLK_t) translating = not translating;
+	if (key == SDLK_n) SpawnRandomShip();
 
 
 	if (key == SDLK_F5)
 	{
 		std::ofstream out{DATA_PATH+"/ships/custom.txt", std::ios::trunc};
-		ship.Serialize(out);
+		player_ship.Serialize(out);
 	}
 
 	if (key == SDLK_F9)
 	{
 		std::ifstream in{DATA_PATH+"/ships/custom.txt"};
-		ship.Deserialize(in);
+		player_ship.Deserialize(in);
 	}
 
 }
@@ -132,18 +115,52 @@ void Game::OnMouseWheel(int y)
 }
 
 
+void Game::Update(float dt)
+{
+
+	//for (auto & ship : ship_list)
+	//{
+		//ship->Update(dt);
+	//}
+
+
+	CheckForDeadShips();
+
+
+	if (rotating)
+	{
+		rot += dt * 36.0f;
+
+		player_ship.GetTransform().SetRotation(rot);
+	}
+
+
+	if (translating) player_ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
+
+	player_ship.SetPartCursor(mouse_world_cursor);
+
+	player_ship.SetConnectorCursor(mouse_world_cursor);
+
+}
+
+
+
 void Game::Render()
 {
 	RenderColour("background");
 	SDL_RenderClear(RENDERER);
 
 
-	Sprite &s = ASSETS->GetSprite("scaffold");
+	//Sprite &s = ASSETS->GetSprite("scaffold");
+	//s.Render_Simple(100, 0);
 
-	s.Render_Simple(100, 0);
 
+	for(auto &ship : ship_list)
+	{
+		ship->Render(world_cam);
+	}
 
-	ship.Render(world_cam);
+	player_ship.Render(world_cam);
 
 
 	RenderColour("hud_blue");
@@ -171,11 +188,70 @@ void Game::ResizeWindow(int w, int h)
 
 void Game::AttachPartToShip(const std::string &part_def)
 {
-	ship.AttachPartAtCursor(part_def);
+	player_ship.AttachPartAtCursor(part_def);
 }
 
 
 void Game::DeleteShipPart()
 {
-	ship.DeletePartAtCursor();
+	player_ship.DeletePartAtCursor();
+}
+
+
+void Game::SetupLevel()
+{
+	SpawnRandomShip();
+	SpawnRandomShip();
+	SpawnRandomShip();
+	world_cam.SetZoom(2.0f);
+}
+
+void Game::SpawnRandomShip()
+{
+	std::vector<std::string> ship_names { "pointy", "ship_one", "custom", "core"};
+	int n = rand() % ship_names.size();
+
+	float x = rand() % 2000 - 1000;
+	float y = rand() % 2000 - 1000;
+	float rot = rand() % 360;
+
+	SpawnShip(ship_names.at(n), x, y, rot);
+}
+
+
+void Game::SpawnShip(const std::string &name, float x, float y, float rot)
+{
+	std::unique_ptr<Ship> ship { new Ship(name) };
+	ship->GetTransform().SetPosition(x, y);
+	ship->GetTransform().SetRotation(rot);
+
+	ship_list.push_back(std::move(ship));
+
+}
+
+
+void Game::InvalidateShip(Ship *about_to_delete)
+{
+	//TODO remove references, eg cursor
+}
+
+
+void Game::CheckForDeadShips()
+{
+	//auto partition = std::remove_if(ship_list.begin(), ship_list.end(), [](auto &ship){ship->ShouldRemove();});
+
+	for(auto it = ship_list.begin(); it != ship_list.end(); )
+	{
+		if ((*it)->ShouldRemove())
+		{
+			InvalidateShip(it->get());
+
+			it = ship_list.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+
 }

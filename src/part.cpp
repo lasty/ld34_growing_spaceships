@@ -121,9 +121,9 @@ void Part::Render(Camera &cam, const Transform &transform)
 		sprite_ref->Render(cam, offset.x, offset.y, rot, transform);
 	}
 
-	//RenderCollisionCircles(cam, transform);
+	RenderCollisionCircles(cam, transform);
 
-	RenderConnectors(cam, transform, nullptr);
+	//RenderConnectors(cam, transform, nullptr);
 }
 
 
@@ -190,6 +190,12 @@ void Part::SetOffsetRelative(const glm::vec2 &rel_offset)
 	{
 		conn.x += rel_offset.x;
 		conn.y += rel_offset.y;
+	}
+
+	for (auto & circ : collision_circles)
+	{
+		circ.x += rel_offset.x;
+		circ.y += rel_offset.y;
 	}
 
 	offset += rel_offset;

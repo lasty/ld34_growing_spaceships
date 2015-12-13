@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "ship.h"
 
+#include <vector>
+#include <memory>
 
 class Game
 {
@@ -19,7 +21,9 @@ private:
 	Camera world_cam;
 	Camera screen_cam;
 
-	Ship ship;
+	Ship player_ship;
+
+	std::vector<std::unique_ptr<Ship>> ship_list;
 
 	float rot = 0.0f;
 
@@ -31,7 +35,6 @@ private:
 
 public:
 	bool GetRunning() const { return running; }
-
 
 	void Update(float dt);
 
@@ -54,10 +57,19 @@ public:
 	void ResizeWindow(int w, int h);
 
 
+	void SetupLevel();
+
 
 	void AttachPartToShip(const std::string &part_def);
 	void DeleteShipPart();
 
+	void InvalidateShip(Ship *about_to_delete);
+
+	void SpawnRandomShip();
+
+	void SpawnShip(const std::string &name, float x, float y, float rot);
+
+	void CheckForDeadShips();
 };
 
 

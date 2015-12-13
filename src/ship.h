@@ -24,6 +24,9 @@ public:
 
 	void Clear();
 
+	bool ShouldRemove() const;
+	bool ShouldSplit() const { return needs_splitting; }
+
 private:
 
 	std::vector<std::unique_ptr<Part>> part_list;
@@ -33,6 +36,8 @@ private:
 
 
 	Transform ship_transform;
+
+	float bounding_circle = 1.0f;
 
 public:
 

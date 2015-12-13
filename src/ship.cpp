@@ -7,6 +7,8 @@
 
 #include "assets.h"
 
+#include "render.h"
+
 #include <fstream>
 #include <glm/detail/func_geometric.hpp>
 
@@ -39,6 +41,13 @@ void Ship::Clear()
 	part_list.clear();
 }
 
+
+bool Ship::ShouldRemove() const
+{
+	return part_list.size() == 0;
+}
+
+
 void Ship::Deserialize(std::istream &in)
 {
 	Clear();
@@ -63,7 +72,7 @@ void Ship::Deserialize(std::istream &in)
 		AddPart(part_name, x, y, rot);
 	}
 	RecalcConnections();
-
+	RecalcCenterOfGravity();
 }
 
 
@@ -93,6 +102,12 @@ void Ship::AddPart(const std::string &partname, float x, float y, float rot)
 
 void Ship::Render(Camera &cam)
 {
+	RenderColour("hud_selected_part");
+	const auto pos = ship_transform.GetPosition();
+	const auto rot = ship_transform.GetRotation();
+	RenderCircleRotated(cam, pos.x, pos.y, bounding_circle, rot);
+
+
 	for(auto & part : part_list)
 	{
 		part->Render(cam, ship_transform);
@@ -300,8 +315,21 @@ void Ship::RecalcCenterOfGravity()
 
 	std::cout << "recalculating center, offset is: " << center.x << ", " << center.y << std::endl;
 
+	float max_dist = 1.0f;
+
 	for(auto &part : part_list)
 	{
 		part->SetOffsetRelative( -center );
+
+		for(auto &circ : part->GetCollisionCircles())
+		{
+			glm::vec2 circ_pos { circ.x, circ.y };
+
+			float dist = glm::length(circ_pos) + circ.radius;
+
+			max_dist = glm::max(max_dist, dist);
+		}
 	}
+
+	bounding_circle = max_dist;
 }
