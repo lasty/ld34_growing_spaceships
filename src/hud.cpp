@@ -23,6 +23,11 @@ HUD::HUD()
 
 , text_action1(font1, "...")
 , text_action2(font1, "...")
+
+
+, warning_select_part_first(font_small, "Step 1: Select A Destroyed Ship Part To Attach", ASSETS->GetColour("hud_background0"))
+, warning_select_part_join(font_small, "Step 2: Select Attachment Point", ASSETS->GetColour("hud_background0"))
+
 {
 	bgcol = ASSETS->GetColour("hud_background0");
 
@@ -96,4 +101,21 @@ void HUD::SetMode(Mode mode)
 		text_action1.SetText("LASER");
 		text_action2.SetText("MISSILE");
 	}
+}
+
+void HUD::RenderWarning_SelectPartFirst(SDL_Point pos)
+{
+	pos.x -= warning_select_part_first.GetWidth() / 2;
+	//pos.y -= warning_select_part_first.GetHeight();
+
+	warning_select_part_first.RenderSimple(pos.x, pos.y);
+}
+
+
+void HUD::RenderWarning_SelectPartJoin(SDL_Point pos)
+{
+	pos.x -= warning_select_part_join.GetWidth() / 2;
+	//pos.y -= warning_select_part_first.GetHeight();
+
+	warning_select_part_join.RenderSimple(pos.x, pos.y);
 }

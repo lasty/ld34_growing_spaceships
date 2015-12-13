@@ -47,7 +47,7 @@ public:
 	void AddPart(const std::string &partname, float x, float y, float rot);
 
 
-	void Render(Camera &cam);
+	void Render(Camera &cam, bool render_connectors, bool render_selected_part);
 	void RenderShipSelected(Camera &cam);
 
 
@@ -55,7 +55,6 @@ public:
 	void SetConnectorCursor(glm::vec2 cursor);
 
 	void AttachPartAtCursor(const std::string &partname);
-	void AttachShipHere(Ship *ship_cursor, Part *conn);
 
 	void DeletePartAtCursor();
 	void DeletePartsAroundPart(Part *part);

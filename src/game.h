@@ -59,6 +59,8 @@ private:
 	Ship * locked_on_ship_cursor = nullptr;
 	Part * locked_on_part_cursor = nullptr;
 
+	int showing_scavenge_hints = 5;
+
 public:
 	bool GetRunning() const { return running; }
 
@@ -90,6 +92,8 @@ public:
 
 	void AttachPartToShip();
 	void DeleteShipPart();
+
+	void AttachShipHere(Ship *ship_cursor, Part *conn);
 
 	void InvalidateShip(Ship *about_to_delete);
 

@@ -190,24 +190,48 @@ void Game::Render()
 	SDL_RenderClear(RENDERER);
 
 
-	//Sprite &s = ASSETS->GetSprite("scaffold");
-	//s.Render_Simple(100, 0);
-
 
 	for(auto &ship : ship_list)
 	{
 		if (ship.get() == ship_cursor)
 		{
-			ship->RenderShipSelected(world_cam);
+			//ship->RenderShipSelected(world_cam);
 		}
 
-		ship->Render(world_cam);
+		ship->Render(world_cam, false, (mode == Mode::Scavenge) );
 	}
 
-	if (player_ship.part_cursor)
+
+
+	if (player_ship.part_cursor and (mode == Mode::Scavenge))
+	{
 		player_ship.RenderShipSelected(world_cam);
 
-	player_ship.Render(world_cam);
+		player_ship.Render(world_cam, (bool)locked_on_part_cursor, false);
+
+		if (showing_scavenge_hints > 0)
+		{
+			auto worldpos = player_ship.GetTransform().GetWorldPosition({0, 0});
+			worldpos.y += player_ship.GetBoundingCircle();
+			auto screenpos = world_cam.WorldToScreen(worldpos.x, worldpos.y);
+
+			if (not locked_on_part_cursor)
+			{
+				hud.RenderWarning_SelectPartFirst(screenpos);
+			}
+			else
+			{
+				hud.RenderWarning_SelectPartJoin(screenpos);
+			}
+		}
+
+
+	}
+	else
+	{
+		player_ship.Render(world_cam, false, false);
+	}
+
 
 
 	RenderColour("blue");
@@ -227,12 +251,16 @@ void Game::Render()
 
 		const glm::vec2 world_pos = locked_on_ship_cursor->GetTransform().GetWorldPosition(connector_pos);
 
-		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4) * 32.0f);
+		RenderColour("blue");
+		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4) * 48.0f);
+		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4.1) * 32.0f);
+
+		RenderColour("white");
+		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4) * 28.0f);
+
 	}
 
-
 	hud.Render();
-
 
 	SDL_RenderPresent(RENDERER);
 }
@@ -285,7 +313,7 @@ void Game::AttachPartToShip()
 	}
 	else  //else attaching to player ship
 	{
-		player_ship.AttachShipHere(locked_on_ship_cursor, locked_on_part_cursor);
+		AttachShipHere(locked_on_ship_cursor, locked_on_part_cursor);
 	}
 
 }
@@ -296,6 +324,46 @@ void Game::DeleteShipPart()
 	player_ship.DeletePartAtCursor();
 	if (ship_cursor) ship_cursor->DeletePartAtCursor();
 }
+
+
+void Game::AttachShipHere(Ship *other_ship, Part *other_part)
+{
+	if (not other_ship) return;
+	if (not other_part) return;
+	if (not player_ship.connector_cursor) return;
+	if (player_ship.connector_cursor->is_connected) return;
+
+	//Coudln't get multiple part ship connections working .. running out of time, so just attach single parts
+
+	//Destroy surrounding parts
+	other_ship->DeletePartsAroundPart(other_part);
+
+	player_ship.AttachPartAtCursor(other_part->GetName());
+
+	//glm::vec2 attach_pos { connector_cursor->x, connector_cursor->y };
+	//float attach_rot = connector_cursor->rot;
+
+	//AddPart(part->GetName(), attach_pos.x, attach_pos.y, attach_rot);
+	//part_list.back()->SetIsland(1);
+
+	//other_ship->enable_clipping = false;
+
+	//other_ship->part_list.clear();
+	other_ship->DeletePart(other_part);
+
+	//RecalcConnections();
+	//RecalcCenterOfGravity();
+
+	other_ship->RecalcConnections();
+	other_ship->RecalcCenterOfGravity();
+
+	locked_on_ship_cursor = nullptr;
+	locked_on_part_cursor = nullptr;
+
+	showing_scavenge_hints--;
+
+}
+
 
 
 void Game::SetupLevel()

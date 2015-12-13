@@ -34,6 +34,8 @@ private:
 	Text text_action1;
 	Text text_action2;
 
+	Text warning_select_part_first;
+	Text warning_select_part_join;
 
 
 public:
@@ -45,6 +47,9 @@ public:
 	void Render();
 
 	void SetMode(Mode mode);
+
+	void RenderWarning_SelectPartFirst(SDL_Point pos);
+	void RenderWarning_SelectPartJoin(SDL_Point pos);
 };
 
 
