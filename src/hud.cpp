@@ -17,13 +17,14 @@ HUD::HUD()
 
 , text_help1(font_small, "Use WASD/Arrows to move, TAB/SPACE: Change mode", ASSETS->GetColour("white"))
 
-, text_control_mode(font1, "MODE: Scavenge")
+, text_control_mode(font1, "MODE: ...")
 , text_button1(font_small, "Left Click:")
 , text_button2(font_small, "Right Click:")
 
-, text_action1(font1, "ATTACH")
-, text_action2(font1, "SCRAP")
+, text_action1(font1, "...")
+, text_action2(font1, "...")
 {
+	bgcol = ASSETS->GetColour("hud_background0");
 
 }
 
@@ -45,7 +46,7 @@ void HUD::Render()
 {
 
 	SDL_Rect rect { 0, int(height) - 100, int(width), 100};
-	RenderColour("hud_background");
+	RenderColour(bgcol);
 
 	SDL_RenderFillRect(RENDERER, &rect);
 
@@ -74,4 +75,25 @@ void HUD::Render()
 	text_button2.RenderSimple(col2, row1);
 	text_action2.RenderSimple(col2, row2);
 
+}
+
+void HUD::SetMode(Mode mode)
+{
+	if (mode == Mode::Scavenge)
+	{
+		bgcol = ASSETS->GetColour("hud_background1");
+
+		text_control_mode.SetText("MODE: Scavenge");
+		text_action1.SetText("ATTACH");
+		text_action2.SetText("SCRAP");
+	}
+
+	if (mode == Mode::Combat)
+	{
+		bgcol = ASSETS->GetColour("hud_background2");
+
+		text_control_mode.SetText("MODE: Combat!");
+		text_action1.SetText("LASER");
+		text_action2.SetText("MISSILE");
+	}
 }

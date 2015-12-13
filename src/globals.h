@@ -18,3 +18,9 @@ extern class Game * GAME;
 
 extern class Assets * ASSETS;
 
+
+enum class Mode
+{
+	Scavenge, Combat
+};
+

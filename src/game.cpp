@@ -412,5 +412,14 @@ void Game::CheckForCollisions(float dt)
 
 void Game::SwitchInputMode()
 {
+	if (mode == Mode::Scavenge)
+	{
+		mode = Mode::Combat;
+	}
+	else if (mode == Mode::Combat)
+	{
+		mode = Mode::Scavenge;
+	}
 
+	hud.SetMode(mode);
 }

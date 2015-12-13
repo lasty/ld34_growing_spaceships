@@ -112,7 +112,9 @@ void Assets::SetupColours()
 {
 	colour_list.emplace("background", SDL_Color{10, 20, 30, 255});
 	colour_list.emplace("hud_background_sep", SDL_Color{200, 200, 192, 200});
-	colour_list.emplace("hud_background", SDL_Color{128, 128, 128, 240});
+	colour_list.emplace("hud_background0", SDL_Color{128, 128, 128, 240});
+	colour_list.emplace("hud_background1", SDL_Color{237, 167, 31, 240});
+	colour_list.emplace("hud_background2", SDL_Color{184, 45, 45, 240});
 
 	colour_list.emplace("blue", SDL_Color{128, 128, 255, 255});
 	colour_list.emplace("red", SDL_Color{255, 32, 32, 255});

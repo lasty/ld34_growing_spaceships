@@ -7,6 +7,7 @@
 
 
 #include "text.h"
+#include "globals.h"
 
 
 class HUD
@@ -18,6 +19,7 @@ public:
 	float height;
 
 private:
+	SDL_Color bgcol;
 
 	Font &font1;
 	Font &font_small;
@@ -42,6 +44,7 @@ public:
 
 	void Render();
 
+	void SetMode(Mode mode);
 };
 
 

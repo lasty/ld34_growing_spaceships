@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "ship.h"
 #include "hud.h"
+#include "globals.h"
+
 
 #include <vector>
 #include <memory>
@@ -23,6 +25,7 @@ public:
 };
 
 
+
 class Game
 {
 public:
@@ -34,6 +37,7 @@ private:
 	Camera world_cam;
 	Camera screen_cam;
 
+	Mode mode = Mode::Combat;
 	HUD hud;
 
 	Ship player_ship;
