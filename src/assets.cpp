@@ -22,6 +22,9 @@ Assets::Assets()
 
 	SetupSprites();
 
+	SetupFonts();
+
+	SetupColours();
 
 	ASSETS = this;
 
@@ -92,6 +95,28 @@ void Assets::SetupSprites()
 }
 
 
+void Assets::SetupFonts()
+{
+	std::string prefix = DATA_PATH + "fonts/";
+
+	font_list.emplace("mono", Font{prefix+"Roboto_Mono/RobotoMono-Regular.ttf", 32});
+
+	font_list.emplace("hud", Font{prefix+"Roboto_Slab/RobotoSlab-Regular.ttf", 32});
+
+}
+
+
+void Assets::SetupColours()
+{
+	colour_list.emplace("background", SDL_Color{10, 20, 30, 255});
+	colour_list.emplace("blue", SDL_Color{128, 128, 255, 255});
+	colour_list.emplace("red", SDL_Color{255, 32, 32, 255});
+	colour_list.emplace("grey", SDL_Color{192, 192, 192, 255});
+	colour_list.emplace("white", SDL_Color{255, 255, 255, 255});
+	colour_list.emplace("green", SDL_Color{32, 255, 32, 255});
+}
+
+
 void Assets::SetupParts()
 {
 	std::ifstream in{DATA_PATH + "parts.txt"};
@@ -122,6 +147,18 @@ Surface &Assets::GetSurface(const std::string &name)
 Sprite &Assets::GetSprite(const std::string &name)
 {
 	return sprite_list.at(name);
+}
+
+
+Font &Assets::GetFont(const std::string &name)
+{
+	return font_list.at(name);
+}
+
+
+SDL_Color & Assets::GetColour(const std::string &name)
+{
+	return colour_list.at(name);
 }
 
 

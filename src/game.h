@@ -6,6 +6,7 @@
 
 #include "camera.h"
 #include "ship.h"
+#include "hud.h"
 
 #include <vector>
 #include <memory>
@@ -20,6 +21,8 @@ private:
 
 	Camera world_cam;
 	Camera screen_cam;
+
+	HUD hud;
 
 	Ship player_ship;
 

@@ -5,6 +5,7 @@
 #include "render.h"
 
 #include "globals.h"
+#include "assets.h"
 
 #include <SDL_render.h>
 
@@ -56,24 +57,14 @@ void RenderLine(Camera &cam, float x1, float y1, float x2, float y2)
 }
 
 
-void RenderColour(int r, int g, int b, int a)
+void RenderColour(const SDL_Color &c)
 {
-	SDL_SetRenderDrawColor(RENDERER, r, g, b, a);
+	SDL_SetRenderDrawColor(RENDERER, c.r, c.g, c.b, c.a);
 }
 
 
 void RenderColour(const std::string &col_name)
 {
-	if (col_name == "background") RenderColour(10, 20, 30, 255);
-	else if (col_name == "hud_selected_part" or col_name == "hud_blue") RenderColour(128, 128, 255, 255);
-	else if (col_name == "hud_collision" or col_name == "connector_red") RenderColour(255, 32, 32, 255);
-	else if (col_name == "connector_grey") RenderColour(192, 192, 192, 255);
-	else if (col_name == "connector_white") RenderColour(255, 255, 255, 255);
-	else if (col_name == "connector_green") RenderColour(32, 255, 32, 255);
-
-	else
-	{
-		std::cout << "Unknown colour name: " <<  col_name;
-		RenderColour(255, 0, 255, 255);
-	}
+	const auto & col = ASSETS->GetColour(col_name);
+	RenderColour(col);
 }

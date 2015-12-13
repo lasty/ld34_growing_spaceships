@@ -145,7 +145,7 @@ void Ship::Render(Camera &cam)
 
 void Ship::RenderShipSelected(Camera &cam)
 {
-	RenderColour("hud_selected_part");
+	RenderColour("blue");
 	const auto pos = ship_transform.GetPosition();
 	const auto rot = ship_transform.GetRotation();
 	RenderCircleRotated(cam, pos.x, pos.y, bounding_circle, rot);

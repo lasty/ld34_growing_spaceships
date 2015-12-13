@@ -131,7 +131,7 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 {
 	const glm::vec2 this_part_world_pos = transform.GetWorldPosition(offset);
 
-	RenderColour("hud_selected_part");
+	RenderColour("blue");
 	RenderCircleRotated(cam, this_part_world_pos.x, this_part_world_pos.y, 32, transform.GetWorldRotation(rot));
 
 	//RenderConnectors(cam, transform);
@@ -141,7 +141,7 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 
 void Part::RenderCollisionCircles(Camera &cam, const Transform &transform)
 {
-	RenderColour("hud_collision");
+	RenderColour("red");
 
 	for(const auto & circle : collision_circles)
 	{
@@ -165,16 +165,16 @@ void Part::RenderConnectors(Camera &cam, const Transform &transform, Connector *
 		if (selected == &connector)
 		{
 			if (connector.is_connected)
-				RenderColour("connector_red");
+				RenderColour("red");
 			else
-				RenderColour("connector_green");
+				RenderColour("green");
 		}
 		else
 		{
 			if (connector.is_connected)
-				RenderColour("connector_grey");
+				RenderColour("grey");
 			else
-				RenderColour("connector_white");
+				RenderColour("white");
 		}
 
 

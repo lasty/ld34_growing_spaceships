@@ -154,6 +154,7 @@ void Game::Update(float dt)
 	player_ship.SetConnectorCursor(mouse_world_cursor);
 
 
+	hud.Update(dt);
 
 }
 
@@ -185,7 +186,7 @@ void Game::Render()
 	player_ship.Render(world_cam);
 
 
-	RenderColour("hud_blue");
+	RenderColour("blue");
 	//s.Render_Simple(mouse_cursor.x, mouse_cursor.y);
 
 	RenderLine(screen_cam, mouse_cursor.x - 10, mouse_cursor.y, mouse_cursor.x + 10, mouse_cursor.y);
@@ -194,6 +195,10 @@ void Game::Render()
 
 	//RenderCircle(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 64.0f);
 	//s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
+
+
+	hud.Render();
+
 
 	SDL_RenderPresent(RENDERER);
 }

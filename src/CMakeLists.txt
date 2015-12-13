@@ -8,9 +8,14 @@ set(SOURCE_FILES
         render.cpp render.h
         sprite.cpp sprite.h
         surface.cpp surface.h
-        camera.cpp camera.h assets.cpp
-        assets.h
-        ship.cpp ship.h part.cpp part.h transform.cpp transform.h)
+        camera.cpp camera.h
+        assets.cpp assets.h
+        ship.cpp ship.h
+        part.cpp part.h
+        transform.cpp transform.h
+        text.cpp text.h
+        font.cpp font.h
+        hud.cpp hud.h)
 
 add_executable(${LD34_TARGET_NAME} ${SOURCE_FILES})
 
