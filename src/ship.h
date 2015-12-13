@@ -72,6 +72,10 @@ public:
 
 	void RecalcCenterOfGravity();
 
+	void Update(float dt);
+
+	void CheckCollision(Ship *other, float dt);
+
 };
 
 

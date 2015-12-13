@@ -373,3 +373,37 @@ void Ship::RecalcCenterOfGravity()
 	ship_transform.SetPosition(world_center.x , world_center.y);
 
 }
+
+
+void Ship::Update(float dt)
+{
+
+}
+
+
+void Ship::CheckCollision(Ship *other, float dt)
+{
+	const glm::vec2 &pos1 = ship_transform.GetPosition();
+	const glm::vec2 &pos2 = other->GetTransform().GetPosition();
+
+	float distance = glm::distance(pos1, pos2);
+
+	float radius1 = bounding_circle;
+	float radius2 = other->bounding_circle;
+
+	if (distance < (radius1 + radius2))
+	{
+		//nudge the ships apart
+
+		glm::vec2 angle = pos2 - pos1;
+
+		glm::vec2 force = -angle * 2.0f * dt;
+
+		ship_transform.SetPositionRelative(force.x, force.y);
+
+		other->GetTransform().SetPositionRelative(-force.x, -force.y);
+	}
+
+}
+
+

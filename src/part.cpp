@@ -121,7 +121,7 @@ void Part::Render(Camera &cam, const Transform &transform)
 		sprite_ref->Render(cam, offset.x, offset.y, rot, transform);
 	}
 
-	RenderCollisionCircles(cam, transform);
+	//RenderCollisionCircles(cam, transform);
 
 	//RenderConnectors(cam, transform, nullptr);
 }

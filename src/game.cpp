@@ -120,10 +120,11 @@ void Game::OnMouseWheel(int y)
 void Game::Update(float dt)
 {
 
-	//for (auto & ship : ship_list)
-	//{
-		//ship->Update(dt);
-	//}
+	UpdateMoveables(dt);
+
+
+	CheckForCollisions(dt);
+
 
 	CheckForSplitShips();
 
@@ -343,5 +344,34 @@ void Game::SetShipCursor()
 				ship_cursor = ship.get();
 			}
 		}
+	}
+}
+
+
+void Game::UpdateMoveables(float dt)
+{
+	player_ship.Update(dt);
+
+	for (auto & ship : ship_list)
+	{
+		ship->Update(dt);
+	}
+}
+
+
+void Game::CheckForCollisions(float dt)
+{
+	for (auto &ship1 : ship_list)
+	{
+		player_ship.CheckCollision(ship1.get(), dt);
+		ship1->CheckCollision(&player_ship, dt);
+
+		for (auto &ship2 : ship_list)
+		{
+			if (ship1 == ship2) continue;
+
+			ship1->CheckCollision(ship2.get(), dt);
+		}
+
 	}
 }

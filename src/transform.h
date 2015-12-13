@@ -18,7 +18,7 @@ public:
 private:
 	glm::mat4 transform_matrix;
 
-	glm::vec3 position;
+	glm::vec2 position;
 	float rot;
 
 public:
@@ -31,7 +31,7 @@ public:
 	void SetPosition(float x, float y);
 	void SetPositionRelative(float x, float y);
 
-	const glm::vec3 & GetPosition() const { return position; };
+	const glm::vec2 & GetPosition() const { return position; };
 
 	void CalcMatrix();
 

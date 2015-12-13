@@ -79,6 +79,9 @@ public:
 
 	void InvalidateShipCursor();
 
+	void UpdateMoveables(float dt);
+
+	void CheckForCollisions(float dt);
 };
 
 
