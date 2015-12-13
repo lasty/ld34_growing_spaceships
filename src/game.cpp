@@ -16,7 +16,7 @@
 #include <glm/geometric.hpp>
 
 Game::Game()
-: player_ship("ship_one")
+: player_ship("custom")
 //: player_ship("pointy")
 //: player_ship("core")
 {
@@ -98,7 +98,7 @@ void Game::OnMouseDown(int x, int y, int button)
 
 	if (button == 1) AttachPartToShip("scaffold");
 	else if (button == 3) DeleteShipPart();
-	else if (button == 2) AttachPartToShip("core");
+	else if (button == 2) AttachPartToShip("pointy");
 
 }
 
@@ -209,6 +209,8 @@ void Game::ResizeWindow(int w, int h)
 	world_cam.ViewPort(0, 0, w, h);
 
 	screen_cam.SetToScreen(0, 0, w, h);
+
+	hud.Resize(w, h);
 }
 
 
@@ -228,16 +230,19 @@ void Game::DeleteShipPart()
 
 void Game::SetupLevel()
 {
-	SpawnRandomShip();
-	SpawnRandomShip();
-	SpawnRandomShip();
+	const int num_ships = 10;
+	for (int i = 0; i < num_ships; i++)
+	{
+		SpawnRandomShip();
+	}
+
 	world_cam.SetZoom(2.0f);
 }
 
 
 void Game::SpawnRandomShip()
 {
-	std::vector<std::string> ship_names { "pointy", "ship_one", "custom", "core"};
+	std::vector<std::string> ship_names { "pointy", "ship_one", "custom"};
 	int n = rand() % ship_names.size();
 
 	float x = rand() % 2000 - 1000;

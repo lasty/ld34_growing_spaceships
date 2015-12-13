@@ -101,6 +101,8 @@ void Assets::SetupFonts()
 
 	font_list.emplace("mono", Font{prefix+"Roboto_Mono/RobotoMono-Regular.ttf", 32});
 
+	font_list.emplace("small", Font{prefix+"Roboto_Slab/RobotoSlab-Regular.ttf", 16});
+
 	font_list.emplace("hud", Font{prefix+"Roboto_Slab/RobotoSlab-Regular.ttf", 32});
 
 }
@@ -109,6 +111,9 @@ void Assets::SetupFonts()
 void Assets::SetupColours()
 {
 	colour_list.emplace("background", SDL_Color{10, 20, 30, 255});
+	colour_list.emplace("hud_background_sep", SDL_Color{200, 200, 192, 200});
+	colour_list.emplace("hud_background", SDL_Color{128, 128, 128, 240});
+
 	colour_list.emplace("blue", SDL_Color{128, 128, 255, 255});
 	colour_list.emplace("red", SDL_Color{255, 32, 32, 255});
 	colour_list.emplace("grey", SDL_Color{192, 192, 192, 255});

@@ -1,7 +1,8 @@
-pointy
-5
-core 0.0 0.0 0.0
-pointy 0.0 128.0 180
-pointy 0.0 -128.0 0
-pointy 64.0 0.0 90
-pointy -64.0 0.0 -90
+custom_ship_name
+6
+core 0 21.3333 0
+pointy 64 21.3333 90
+pointy -64 21.3333 -90
+scaffold 0 -42.6667 0
+pointy -2.86102e-006 85.3333 180
+pointy 0 -106.667 0
