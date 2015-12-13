@@ -240,6 +240,77 @@ void Ship::AttachPartAtCursor(const std::string &partname)
 }
 
 
+void Ship::AttachShipHere(Ship *other_ship, Connector *other_connector)
+{
+	if (not other_ship) return;
+	if (not connector_cursor) return;
+	if (connector_cursor->is_connected) return;
+	if (not other_connector) return;
+
+
+	/*
+	//TODO Coudln't get multiple part ship connections working .. running out of time, so just attach single part
+
+	other_ship->enable_clipping = false;
+
+	//translate other ship so connector is origin
+	glm::vec2 other_connector_loc { other_connector->x, other_connector->y };
+
+	glm::vec2 attach_pos { connector_cursor->x, connector_cursor->y };
+	float attach_rot = connector_cursor->rot;
+
+	for(auto &part : other_ship->part_list)
+	{
+		part->SetOffsetRelative(-other_connector_loc);
+	}
+
+	//rotate other ship to new attach joint
+	other_ship->ship_transform.SetRotation(attach_rot);
+	other_ship->SetHeading(attach_rot);
+
+	//move other ship to attach point
+	other_ship->GetTransform().SetPosition(attach_pos.x, attach_pos.y);
+
+	//for(auto &part : other_ship->part_list)
+	//{
+	//	part->SetOffsetRelative(attach_pos);
+	//}
+
+	for(auto &part : other_ship->part_list)
+	{
+		const glm::vec2 add_part_world_pos = other_ship->GetTransform().GetWorldPosition(part->GetOffset());
+		float addrot = part->GetRot() + attach_rot;
+
+		AddPart(part->GetName(), add_part_world_pos.x, add_part_world_pos.y, addrot);
+		part_list.back()->SetIsland(1);
+	}
+
+	*/
+
+
+	//Only attach if one part
+	if (other_ship->part_list.size() != 1) return;
+
+	auto & part = other_ship->part_list.front();
+
+	AttachPartAtCursor(part->GetName());
+
+	//glm::vec2 attach_pos { connector_cursor->x, connector_cursor->y };
+	//float attach_rot = connector_cursor->rot;
+
+	//AddPart(part->GetName(), attach_pos.x, attach_pos.y, attach_rot);
+	//part_list.back()->SetIsland(1);
+
+	other_ship->enable_clipping = false;
+
+	other_ship->part_list.clear();
+
+	//RecalcConnections();
+	//RecalcCenterOfGravity();
+
+}
+
+
 void Ship::DeletePartAtCursor()
 {
 	if (not part_cursor) return;
@@ -388,6 +459,9 @@ void Ship::Update(float dt)
 
 void Ship::CheckCollision(Ship *other, float dt)
 {
+	if (not(enable_clipping and other->enable_clipping)) return;
+	return;  //XXX
+
 	const glm::vec2 &pos1 = ship_transform.GetPosition();
 	const glm::vec2 &pos2 = other->GetTransform().GetPosition();
 

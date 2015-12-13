@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <glm/geometric.hpp>
+#include <iostream>
 
 
 glm::vec2 WASD::GetVec() const
@@ -118,9 +119,8 @@ void Game::OnMouseDown(int x, int y, int button)
 {
 	SetMouseCursor(x, y);
 
-	if (button == 1) AttachPartToShip("scaffold");
-	else if (button == 3) DeleteShipPart();
-	else if (button == 2) AttachPartToShip("pointy");
+	if (button == 1) DoCommand1();
+	else if (button == 3) DoCommand2();
 
 }
 
@@ -141,6 +141,7 @@ void Game::OnMouseWheel(int y)
 
 void Game::Update(float dt)
 {
+	wallclock += dt;
 
 	UpdateMoveables(dt);
 
@@ -220,6 +221,16 @@ void Game::Render()
 	//s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
 
 
+	if (locked_on_ship_cursor and locked_on_connector_cursor)
+	{
+		const glm::vec2 connector_pos { locked_on_connector_cursor->x, locked_on_connector_cursor->y};
+
+		const glm::vec2 world_pos = locked_on_ship_cursor->GetTransform().GetWorldPosition(connector_pos);
+
+		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4) * 32.0f);
+	}
+
+
 	hud.Render();
 
 
@@ -237,10 +248,46 @@ void Game::ResizeWindow(int w, int h)
 }
 
 
-
-void Game::AttachPartToShip(const std::string &part_def)
+void Game::DoCommand1()
 {
-	player_ship.AttachPartAtCursor(part_def);
+	if (mode == Mode::Combat)
+	{
+		DeleteShipPart();  //TODO
+	}
+	else if (mode == Mode::Scavenge)
+	{
+		AttachPartToShip();
+	}
+}
+
+
+void Game::DoCommand2()
+{
+	if (mode == Mode::Combat)
+	{
+		DeleteShipPart();  //TODO
+	}
+	else if (mode == Mode::Scavenge)
+	{
+		DeleteShipPart();
+	}
+}
+
+
+void Game::AttachPartToShip()
+{
+	//player_ship.AttachPartAtCursor(part_def);
+
+	if (ship_cursor)
+	{
+		locked_on_ship_cursor = ship_cursor;
+		locked_on_connector_cursor = ship_cursor->connector_cursor;
+	}
+	else
+	{
+		player_ship.AttachShipHere(locked_on_ship_cursor, locked_on_connector_cursor);
+	}
+
 }
 
 
@@ -260,6 +307,9 @@ void Game::SetupLevel()
 	}
 
 	world_cam.SetZoom(2.0f);
+
+	SetMode(Mode::Scavenge);
+
 }
 
 
@@ -291,7 +341,16 @@ void Game::SpawnShip(const std::string &name, float x, float y, float rot)
 void Game::InvalidateShip(Ship *about_to_delete)
 {
 	//Don't call invalidate cursor here, in case data is already deleted
-	if (ship_cursor == about_to_delete)  ship_cursor = nullptr;
+	if (ship_cursor == about_to_delete)
+	{
+		ship_cursor = nullptr;
+	}
+
+	if (locked_on_ship_cursor == about_to_delete)
+	{
+		locked_on_ship_cursor = nullptr;
+		locked_on_connector_cursor = nullptr;
+	}
 }
 
 
@@ -410,16 +469,34 @@ void Game::CheckForCollisions(float dt)
 	}
 }
 
+
+void Game::SetMode(Mode new_mode)
+{
+	mode = new_mode;
+
+	if (mode == Mode::Scavenge)
+	{
+		InvalidateShipCursor();
+		rotating = false;
+	}
+	else if (mode == Mode::Combat)
+	{
+		InvalidateShipCursor();
+		rotating = true;
+	}
+
+	hud.SetMode(mode);
+}
+
+
 void Game::SwitchInputMode()
 {
 	if (mode == Mode::Scavenge)
 	{
-		mode = Mode::Combat;
+		SetMode(Mode::Combat);
 	}
-	else if (mode == Mode::Combat)
+	else
 	{
-		mode = Mode::Scavenge;
+		SetMode(Mode::Scavenge);
 	}
-
-	hud.SetMode(mode);
 }

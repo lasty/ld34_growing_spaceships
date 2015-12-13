@@ -36,6 +36,7 @@ private:
 
 	bool needs_splitting = false;
 
+	bool enable_clipping = true;
 
 	Transform ship_transform;
 
@@ -54,6 +55,8 @@ public:
 	void SetConnectorCursor(glm::vec2 cursor);
 
 	void AttachPartAtCursor(const std::string &partname);
+	void AttachShipHere(Ship *ship_cursor, Connector * conn);
+
 	void DeletePartAtCursor();
 
 	Part * part_cursor = nullptr;

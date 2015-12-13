@@ -45,6 +45,7 @@ private:
 	std::vector<std::unique_ptr<Ship>> ship_list;
 
 	float rot = 0.0f;
+	float wallclock = 0.0f;
 
 	bool rotating = true;
 	bool translating = true;
@@ -54,6 +55,9 @@ private:
 	glm::vec2 mouse_world_cursor;
 
 	Ship * ship_cursor = nullptr;
+
+	Ship * locked_on_ship_cursor = nullptr;
+	Connector * locked_on_connector_cursor = nullptr;
 
 public:
 	bool GetRunning() const { return running; }
@@ -81,8 +85,10 @@ public:
 
 	void SetupLevel();
 
+	void DoCommand1();
+	void DoCommand2();
 
-	void AttachPartToShip(const std::string &part_def);
+	void AttachPartToShip();
 	void DeleteShipPart();
 
 	void InvalidateShip(Ship *about_to_delete);
@@ -104,6 +110,8 @@ public:
 	void CheckForCollisions(float dt);
 
 	void SwitchInputMode();
+
+	void SetMode(Mode new_mode);
 };
 
 
