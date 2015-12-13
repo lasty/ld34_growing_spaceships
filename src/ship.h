@@ -55,9 +55,11 @@ public:
 	void SetConnectorCursor(glm::vec2 cursor);
 
 	void AttachPartAtCursor(const std::string &partname);
-	void AttachShipHere(Ship *ship_cursor, Connector * conn);
+	void AttachShipHere(Ship *ship_cursor, Part *conn);
 
 	void DeletePartAtCursor();
+	void DeletePartsAroundPart(Part *part);
+	void DeletePart(Part *part);
 
 	Part * part_cursor = nullptr;
 	Connector * connector_cursor = nullptr;

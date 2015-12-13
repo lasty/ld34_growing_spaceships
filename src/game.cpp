@@ -221,9 +221,9 @@ void Game::Render()
 	//s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
 
 
-	if (locked_on_ship_cursor and locked_on_connector_cursor)
+	if (locked_on_ship_cursor and locked_on_part_cursor)
 	{
-		const glm::vec2 connector_pos { locked_on_connector_cursor->x, locked_on_connector_cursor->y};
+		const glm::vec2 connector_pos = locked_on_part_cursor->GetOffset();
 
 		const glm::vec2 world_pos = locked_on_ship_cursor->GetTransform().GetWorldPosition(connector_pos);
 
@@ -278,14 +278,14 @@ void Game::AttachPartToShip()
 {
 	//player_ship.AttachPartAtCursor(part_def);
 
-	if (ship_cursor)
+	if (ship_cursor)  //if targeting other ship
 	{
 		locked_on_ship_cursor = ship_cursor;
-		locked_on_connector_cursor = ship_cursor->connector_cursor;
+		locked_on_part_cursor = ship_cursor->part_cursor;
 	}
-	else
+	else  //else attaching to player ship
 	{
-		player_ship.AttachShipHere(locked_on_ship_cursor, locked_on_connector_cursor);
+		player_ship.AttachShipHere(locked_on_ship_cursor, locked_on_part_cursor);
 	}
 
 }
@@ -349,7 +349,7 @@ void Game::InvalidateShip(Ship *about_to_delete)
 	if (locked_on_ship_cursor == about_to_delete)
 	{
 		locked_on_ship_cursor = nullptr;
-		locked_on_connector_cursor = nullptr;
+		locked_on_part_cursor = nullptr;
 	}
 }
 

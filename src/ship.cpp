@@ -240,12 +240,12 @@ void Ship::AttachPartAtCursor(const std::string &partname)
 }
 
 
-void Ship::AttachShipHere(Ship *other_ship, Connector *other_connector)
+void Ship::AttachShipHere(Ship *other_ship, Part *other_part)
 {
 	if (not other_ship) return;
+	if (not other_part) return;
 	if (not connector_cursor) return;
 	if (connector_cursor->is_connected) return;
-	if (not other_connector) return;
 
 
 	/*
@@ -288,12 +288,13 @@ void Ship::AttachShipHere(Ship *other_ship, Connector *other_connector)
 	*/
 
 
-	//Only attach if one part
-	if (other_ship->part_list.size() != 1) return;
+	//Destroy surrounding parts
+	if (other_ship->part_list.size() != 1)
+	{
+		other_ship->DeletePartsAroundPart(other_part);
+	}
 
-	auto & part = other_ship->part_list.front();
-
-	AttachPartAtCursor(part->GetName());
+	AttachPartAtCursor(other_part->GetName());
 
 	//glm::vec2 attach_pos { connector_cursor->x, connector_cursor->y };
 	//float attach_rot = connector_cursor->rot;
@@ -303,10 +304,14 @@ void Ship::AttachShipHere(Ship *other_ship, Connector *other_connector)
 
 	other_ship->enable_clipping = false;
 
-	other_ship->part_list.clear();
+	//other_ship->part_list.clear();
+	other_ship->DeletePart(other_part);
 
 	//RecalcConnections();
 	//RecalcCenterOfGravity();
+
+	other_ship->RecalcConnections();
+	other_ship->RecalcCenterOfGravity();
 
 }
 
@@ -315,11 +320,32 @@ void Ship::DeletePartAtCursor()
 {
 	if (not part_cursor) return;
 
-	auto it = std::find_if(part_list.begin(), part_list.end(), [&](auto &p){return p.get() == part_cursor;});
-	part_list.erase(it);
+	DeletePart(part_cursor);
 
 	RecalcConnections();
 	RecalcCenterOfGravity();
+}
+
+
+void Ship::DeletePartsAroundPart(Part *part)
+{
+	if (not part) return;
+	for(auto & conn : part->GetConnectors())
+	{
+		if (conn.is_connected)
+		{
+			DeletePart(conn.connects_to);
+		}
+	}
+}
+
+
+void Ship::DeletePart(Part *part)
+{
+	if (not part) return;
+
+	auto it = std::find_if(part_list.begin(), part_list.end(), [&](auto &p){return p.get() == part;});
+	part_list.erase(it);
 }
 
 

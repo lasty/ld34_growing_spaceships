@@ -57,7 +57,7 @@ private:
 	Ship * ship_cursor = nullptr;
 
 	Ship * locked_on_ship_cursor = nullptr;
-	Connector * locked_on_connector_cursor = nullptr;
+	Part * locked_on_part_cursor = nullptr;
 
 public:
 	bool GetRunning() const { return running; }
