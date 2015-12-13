@@ -76,6 +76,26 @@ public:
 
 	void CheckCollision(Ship *other, float dt);
 
+	float max_turn_rate = 180.0f;
+	float set_heading = 0.0f;
+	//float current_heading = 0.0f;
+	float current_turn_rate = 0.0f;
+
+	void SetHeading(glm::vec2 point);
+	void SetHeading(float deg) { set_heading = deg; }
+	void SetHeadingRelative(float deg) { set_heading += deg; }
+
+
+	glm::vec2 current_velocity;
+	glm::vec2 set_velocity;
+
+	void SetThrust(glm::vec2 thrust);
+
+	void UpdateRotation(float dt);
+
+	void UpdatePosition(float dt);
+
+	void ApplyForce(glm::vec2 thrust);
 };
 
 

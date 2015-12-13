@@ -11,6 +11,18 @@
 #include <vector>
 #include <memory>
 
+class WASD
+{
+public:
+	bool up = false;
+	bool down = false;
+	bool left = false;
+	bool right = false;
+
+	glm::vec2 GetVec() const;
+};
+
+
 class Game
 {
 public:
@@ -30,8 +42,9 @@ private:
 
 	float rot = 0.0f;
 
-	bool rotating = false;
-	bool translating = false;
+	bool rotating = true;
+	bool translating = true;
+	WASD arrow_controls;
 
 	glm::ivec2 mouse_cursor;
 	glm::vec2 mouse_world_cursor;
@@ -85,6 +98,8 @@ public:
 	void UpdateMoveables(float dt);
 
 	void CheckForCollisions(float dt);
+
+	void SwitchInputMode();
 };
 
 

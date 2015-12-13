@@ -15,6 +15,19 @@
 #include <algorithm>
 #include <glm/geometric.hpp>
 
+
+glm::vec2 WASD::GetVec() const
+{
+	glm::vec2 v;
+	if (up) v.y -= 1;
+	if (down) v.y += 1;
+	if (left) v.x -= 1;
+	if (right) v.x += 1;
+
+	return v;
+}
+
+
 Game::Game()
 : player_ship("custom")
 //: player_ship("pointy")
@@ -45,10 +58,10 @@ void Game::OnInput(SDL_Event &event)
 
 void Game::OnKeyDown(SDL_Keycode key)
 {
-	if (key == SDLK_w) world_cam.SetOffsetRelative(0, 10.0f);
-	if (key == SDLK_s) world_cam.SetOffsetRelative(0, -10.0f);
-	if (key == SDLK_a) world_cam.SetOffsetRelative(10.0f, 0);
-	if (key == SDLK_d) world_cam.SetOffsetRelative(-10.0f, 0);
+	if (key == SDLK_w or key == SDLK_UP) arrow_controls.up = true;
+	if (key == SDLK_s or key == SDLK_DOWN) arrow_controls.down = true;
+	if (key == SDLK_a or key == SDLK_LEFT) arrow_controls.left = true;
+	if (key == SDLK_d or key == SDLK_RIGHT) arrow_controls.right = true;
 
 	if (key == SDLK_KP_PLUS) world_cam.SetZoomRelative(0.25f);
 	if (key == SDLK_KP_MINUS) world_cam.SetZoomRelative(-0.25f);
@@ -56,6 +69,11 @@ void Game::OnKeyDown(SDL_Keycode key)
 	if (key == SDLK_r) rotating = not rotating;
 	if (key == SDLK_t) translating = not translating;
 	if (key == SDLK_n) SpawnRandomShip();
+
+	if (key == SDLK_TAB or key == SDLK_SPACE or key == SDLK_KP_0 or key == SDLK_RETURN or key == SDLK_KP_ENTER)
+	{
+		SwitchInputMode();
+	}
 
 
 	if (key == SDLK_F5)
@@ -75,6 +93,10 @@ void Game::OnKeyDown(SDL_Keycode key)
 
 void Game::OnKeyUp(SDL_Keycode key)
 {
+	if (key == SDLK_w or key == SDLK_UP) arrow_controls.up = false;
+	if (key == SDLK_s or key == SDLK_DOWN) arrow_controls.down = false;
+	if (key == SDLK_a or key == SDLK_LEFT) arrow_controls.left = false;
+	if (key == SDLK_d or key == SDLK_RIGHT) arrow_controls.right = false;
 
 }
 
@@ -133,12 +155,13 @@ void Game::Update(float dt)
 
 	if (rotating)
 	{
-		rot += dt * 36.0f;
-
-		player_ship.GetTransform().SetRotation(rot);
+		player_ship.SetHeading(mouse_world_cursor);
 	}
 
-	if (translating) player_ship.GetTransform().SetPositionRelative(dt * 100.0f, 0.0f);
+	if (translating)
+	{
+		player_ship.SetThrust(arrow_controls.GetVec());
+	}
 
 
 	SetShipCursor();
@@ -258,6 +281,7 @@ void Game::SpawnShip(const std::string &name, float x, float y, float rot)
 	std::unique_ptr<Ship> ship { new Ship(name) };
 	ship->GetTransform().SetPosition(x, y);
 	ship->GetTransform().SetRotation(rot);
+	ship->SetHeading(rot);
 
 	ship_list.push_back(std::move(ship));
 
@@ -384,4 +408,9 @@ void Game::CheckForCollisions(float dt)
 		}
 
 	}
+}
+
+void Game::SwitchInputMode()
+{
+
 }

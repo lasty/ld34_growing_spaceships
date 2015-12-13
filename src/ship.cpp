@@ -10,7 +10,8 @@
 #include "render.h"
 
 #include <fstream>
-#include <glm/detail/func_geometric.hpp>
+#include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -38,6 +39,7 @@ std::unique_ptr<Ship> Ship::SplitShip()
 {
 	std::unique_ptr<Ship> new_ship { new Ship() };
 	new_ship->GetTransform() = GetTransform();
+	new_ship->SetHeadingRelative((rand() % 360) - 180);
 
 	for(auto it = part_list.begin(); it != part_list.end(); )
 	{
@@ -378,6 +380,9 @@ void Ship::RecalcCenterOfGravity()
 void Ship::Update(float dt)
 {
 
+	UpdateRotation(dt);
+
+	UpdatePosition(dt);
 }
 
 
@@ -397,13 +402,68 @@ void Ship::CheckCollision(Ship *other, float dt)
 
 		glm::vec2 angle = pos2 - pos1;
 
-		glm::vec2 force = -angle * 2.0f * dt;
+		//glm::vec2 force = -angle * 2.0f * dt;
+		glm::vec2 force = -angle * 0.025f * dt;
 
-		ship_transform.SetPositionRelative(force.x, force.y);
-
-		other->GetTransform().SetPositionRelative(-force.x, -force.y);
+		ApplyForce(force);
+		other->ApplyForce(-force);
+		//ship_transform.SetPositionRelative(force.x, force.y);
+		//other->GetTransform().SetPositionRelative(-force.x, -force.y);
 	}
 
 }
 
+
+void Ship::SetHeading(glm::vec2 point)
+{
+	glm::vec2 pos = ship_transform.GetPosition();
+
+	float angle = glm::degrees(atan2f(point.y - pos.y, point.x - pos.x)) + 90;
+
+	set_heading = angle;
+
+}
+
+
+void Ship::UpdateRotation(float dt)
+{
+	float current_heading = ship_transform.GetRotation();
+
+	glm::vec2 current_dir { cosf(glm::radians(current_heading)) , sinf(glm::radians(current_heading))};;
+	current_dir = glm::normalize(current_dir);
+
+	glm::vec2 desired_dir { cosf(glm::radians(set_heading)) , sinf(glm::radians(set_heading))};;
+
+	current_dir += (desired_dir - current_dir) * glm::radians(max_turn_rate) * dt;
+
+	float new_angle = atan2f(current_dir.y, current_dir.x);
+
+
+	current_heading = glm::degrees(new_angle);
+
+	ship_transform.SetRotation(current_heading);
+
+}
+
+
+void Ship::SetThrust(glm::vec2 thrust)
+{
+	set_velocity = thrust;
+}
+
+
+void Ship::ApplyForce(glm::vec2 thrust)
+{
+	current_velocity += thrust;
+}
+
+
+void Ship::UpdatePosition(float dt)
+{
+	current_velocity += (set_velocity - current_velocity) * dt * 2.0f;
+	//current_velocity = set_velocity;
+
+	ship_transform.SetPositionRelative(current_velocity.x * 1000.0f * dt, current_velocity.y * 1000.0f * dt);
+
+}
 
