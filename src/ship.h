@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "part.h"
 #include "transform.h"
+#include "projectile.h"
 
 
 class Ship
@@ -79,6 +80,7 @@ public:
 	void Update(float dt);
 
 	void CheckCollision(Ship *other, float dt);
+	void CheckCollision(Projectile *proj);
 
 	float max_turn_rate = 180.0f;
 	float set_heading = 0.0f;

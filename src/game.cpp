@@ -573,18 +573,18 @@ void Game::RenderProjectiles()
 	for (auto & proj : projectile_list)
 	{
 		proj->Render(world_cam);
-		std::cout << "rendering projectile" << std::endl;
 	}
 }
 
 
 void Game::SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel)
 {
+
+
 	std::unique_ptr<Projectile> proj { new Projectile(name, pos, vel, 32.0f, 2.0f)};
 
 	projectile_list.push_back(std::move(proj));
 
-	std::cout << "Fire!" << std::endl;
 }
 
 
@@ -655,7 +655,15 @@ void Game::CheckForCollisions(float dt)
 
 			ship1->CheckCollision(ship2.get(), dt);
 		}
+	}
 
+
+	for (auto &proj : projectile_list)
+	{
+		for (auto &ship : ship_list)
+		{
+			ship->CheckCollision(proj.get());
+		}
 	}
 }
 

@@ -447,6 +447,53 @@ void Ship::CheckCollision(Ship *other, float dt)
 }
 
 
+void Ship::CheckCollision(Projectile *proj)
+{
+	assert(proj);
+	//if (not proj->IsAlive()) return;
+
+	const glm::vec2 &pos1 = ship_transform.GetPosition();
+	const glm::vec2 &pos2 = proj->GetPosition();
+
+	float distance = glm::distance(pos1, pos2);
+
+	float radius1 = bounding_circle;
+	float radius2 = proj->GetRadius();
+
+	//broad phase collision
+	if (distance < (radius1 + radius2))
+	{
+		//check if any parts are hit
+
+		for(auto &part : part_list)
+		{
+
+			//for(auto &circle : part->GetCollisionCircles())
+			//{
+			//	const glm::vec2 pos3 { circle.x, circle.y };
+			//	float radius3 = circle.radius;
+
+				glm::vec2 pos3 = GetWorldPositionPart(part.get());
+				float radius3 = 32.0f;
+
+				float distance2 = glm::distance(pos2, pos3);
+
+				if (distance2 < (radius2 + radius3))
+				{
+					//This part is hit
+
+					DeletePart(part.get());
+					proj->SetRemove();
+					return;
+				}
+
+			//}
+		}
+	}
+
+}
+
+
 void Ship::SetHeading(glm::vec2 point)
 {
 	glm::vec2 pos = ship_transform.GetPosition();

@@ -2,7 +2,9 @@
 // Created by Tristan on 14/12/2015.
 //
 
-#include <glm/detail/func_trigonometric.hpp>
+#include <glm/trigonometric.hpp>
+#include <glm/geometric.hpp>
+
 #include "projectile.h"
 
 #include "globals.h"
@@ -14,6 +16,10 @@ Projectile::Projectile(const std::string &name, glm::vec2 start, glm::vec2 veloc
 	sprite_ref = &ASSETS->GetSprite(name);
 
 	this->position = start;
+
+	float linear_vel = 1000.0f;
+	if (name == "laser")  linear_vel = 2000.0f;
+	velocity = glm::normalize(velocity) * linear_vel;
 	this->velocity = velocity;
 
 	this->radius = radius;

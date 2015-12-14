@@ -31,10 +31,17 @@ public:
 	void Update(float dt);
 
 	bool ShouldRemove() const { return not alive; }
+	bool IsAlive() const { return alive; }
 
 	void Render(Camera &cam);
 
-	void CheckCollision();
+	//void CheckCollision();
+
+	const glm::vec2 & GetPosition() const { return position; }
+	float GetRadius() const { return radius; }
+
+	void SetRemove() { alive = false; }
+
 };
 
 
