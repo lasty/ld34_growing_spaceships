@@ -380,20 +380,20 @@ void Ship::RecalcCenterOfGravity()
 
 	//std::cout << "recalculating center, offset is: " << center.x << ", " << center.y << std::endl;
 
-	float max_dist = 1.0f;
 
 	for(auto &part : part_list)
 	{
 		part->SetOffsetRelative( -center );
+	}
 
-		for(auto &circ : part->GetCollisionCircles())
-		{
-			glm::vec2 circ_pos { circ.x, circ.y };
+	//recalc bounding circle
+	float max_dist = 32.0f;
 
-			float dist = glm::length(circ_pos) + circ.radius;
+	for(auto &part : part_list)
+	{
+		float dist = glm::distance(center, part->GetOffset()) + 32.0f;
 
-			max_dist = glm::max(max_dist, dist);
-		}
+		max_dist = glm::max(dist, max_dist);
 	}
 
 	bounding_circle = max_dist;
@@ -467,27 +467,19 @@ void Ship::CheckCollision(Projectile *proj)
 
 		for(auto &part : part_list)
 		{
+			glm::vec2 pos3 = GetWorldPositionPart(part.get());
+			float radius3 = 32.0f;  //XXX Hard coded part radius
 
-			//for(auto &circle : part->GetCollisionCircles())
-			//{
-			//	const glm::vec2 pos3 { circle.x, circle.y };
-			//	float radius3 = circle.radius;
+			float distance2 = glm::distance(pos2, pos3);
 
-				glm::vec2 pos3 = GetWorldPositionPart(part.get());
-				float radius3 = 32.0f;
+			if (distance2 < (radius2 + radius3))
+			{
+				//This part is hit
 
-				float distance2 = glm::distance(pos2, pos3);
-
-				if (distance2 < (radius2 + radius3))
-				{
-					//This part is hit
-
-					DeletePart(part.get());
-					proj->SetRemove();
-					return;
-				}
-
-			//}
+				DeletePart(part.get());
+				proj->SetRemove();
+				return;
+			}
 		}
 	}
 

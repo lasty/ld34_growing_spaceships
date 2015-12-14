@@ -8,7 +8,7 @@
 #include "assets.h"
 #include "render.h"
 
-#include <iostream>
+//#include <iostream>
 
 Part::Part(const std::string &name, std::ifstream &in)
 {
@@ -16,35 +16,16 @@ Part::Part(const std::string &name, std::ifstream &in)
 
 	std::string sprite_name;
 	in >> sprite_name;
-	std::cout << "part sprite name: " << sprite_name << std::endl;
+	//std::cout << "part sprite name: " << sprite_name << std::endl;
 
 	Sprite &sprite = ASSETS->GetSprite(sprite_name);
 
 	sprite_ref = &sprite;
 
-	int num_collision_circles = 0;
-	in >> num_collision_circles;
-
-	std::cout << "num collision circles: " << num_collision_circles << std::endl;
-
-
-	for(int i=0; i<num_collision_circles; i++)
-	{
-		float x;
-		float y;
-		float radius;
-
-		in >> x >> y >> radius;
-
-		if (not in or in.eof() or in.bad()) break;
-
-		collision_circles.push_back(CollisionCircle(x, y, radius));
-	}
-
 	int num_connectors = 0;
 	in >> num_connectors;
 
-	std::cout << "num connectors: " << num_connectors << std::endl;
+	//std::cout << "num connectors: " << num_connectors << std::endl;
 
 
 	for (int i=0; i< num_connectors; i++)
@@ -70,27 +51,12 @@ Part::Part(const Part &copy, float x, float y, float rot)
 	sprite_ref = copy.sprite_ref;
 	offset = copy.offset;
 	this->rot = copy.rot;
-	collision_circles = copy.collision_circles;
+	//collision_circles = copy.collision_circles;
 	connectors = copy.connectors;
 
 	offset.x = x;
 	offset.y = y;
 	this->rot = rot;
-
-	for(auto &circle : collision_circles)
-	{
-		//transform old circle to new circle position
-
-		float rad = glm::radians(this->rot);
-
-		// perform quick 2d rotation
-		float newx = (cosf(rad) * circle.x) - (sinf(rad) * circle.y);
-		float newy = (cosf(rad) * circle.y) + (sinf(rad) * circle.x);
-
-		// add the old offset
-		circle.x = newx + x;
-		circle.y = newy + y;
-	}
 
 
 	for(auto &connector : connectors)
@@ -147,21 +113,6 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 }
 
 
-void Part::RenderCollisionCircles(Camera &cam, const Transform &transform)
-{
-	RenderColour("red");
-
-	for(const auto & circle : collision_circles)
-	{
-		glm::vec2 collision_pos {circle.x, circle.y};
-
-		const glm::vec2 world_pos = transform.GetWorldPosition(collision_pos);
-
-		RenderCircle(cam, world_pos.x, world_pos.y, circle.radius);
-	}
-}
-
-
 void Part::RenderConnectors(Camera &cam, const Transform &transform, Connector *selected)
 {
 	for(const auto & connector : connectors)
@@ -200,11 +151,6 @@ void Part::SetOffsetRelative(const glm::vec2 &rel_offset)
 		conn.y += rel_offset.y;
 	}
 
-	for (auto & circ : collision_circles)
-	{
-		circ.x += rel_offset.x;
-		circ.y += rel_offset.y;
-	}
 
 	offset += rel_offset;
 }

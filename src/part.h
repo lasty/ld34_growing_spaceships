@@ -29,20 +29,6 @@ public:
 };
 
 
-class CollisionCircle
-{
-public:
-	CollisionCircle(float x, float y, float radius)
-	: x{x}, y{y}, radius{radius}
-	{ }
-
-public:
-	float x = 0.0f;
-	float y = 0.0f;
-	float radius = 0.0f;
-};
-
-
 
 class Part
 {
@@ -64,8 +50,6 @@ private:
 
 	Sprite * sprite_ref = nullptr;
 
-	std::vector<CollisionCircle> collision_circles;
-
 	std::vector<Connector> connectors;
 
 public:
@@ -77,13 +61,10 @@ public:
 
 	void RenderSelected(Camera &cam, const Transform & ship_transform);
 
-	void RenderCollisionCircles(Camera &cam, const Transform &transform);
 	void RenderConnectors(Camera &cam, const Transform &transform, Connector *selected);
 
 	std::vector<Connector> & GetConnectors() { return connectors; }
 	Connector & GetConnector(int i) { return connectors.at(i); }
-
-	std::vector<CollisionCircle> & GetCollisionCircles() { return collision_circles; }
 
 	const std::string & GetName() const { return part_name; }
 	const glm::vec2 & GetOffset() const { return offset; }
