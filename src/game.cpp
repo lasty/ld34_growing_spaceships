@@ -147,6 +147,7 @@ void Game::Update(float dt)
 
 	UpdateMoveables(dt);
 
+	CheckAndPopulateRandomShips();
 
 	CheckForCollisions(dt);
 
@@ -745,3 +746,22 @@ void Game::FireWeapons(int weapgroup)
 	}
 
 }
+
+
+
+void Game::CheckAndPopulateRandomShips()
+{
+	int num_ships = 0;
+	int num_junk = 0;
+
+	for (auto &ship : ship_list)
+	{
+		if (ship->IsShip()) num_ships++;
+		if (ship->IsJunk()) num_junk++;
+	}
+
+	hud.UpdateShipCount(num_ships, num_junk);
+
+
+}
+

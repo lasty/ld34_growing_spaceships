@@ -132,6 +132,13 @@ public:
 	void SetMode(Mode new_mode);
 
 	void FireWeapons(int weapgroup);
+
+
+	void CheckAndPopulateRandomShips();
+
+
+	void DoEnemyShipAI(float dt);
+
 };
 
 

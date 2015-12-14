@@ -10,6 +10,7 @@
 
 #include "globals.h"
 
+#include <sstream>
 
 HUD::HUD()
 : font1(ASSETS->GetFont("hud"))
@@ -28,6 +29,8 @@ HUD::HUD()
 , warning_select_part_first(font_small, "Step 1: Select A Destroyed Ship Part To Attach", ASSETS->GetColour("hud_background0"))
 , warning_select_part_join(font_small, "Step 2: Select Attachment Point", ASSETS->GetColour("hud_background0"))
 
+, ships_nearby(font_small, "Ships Nearby: ...", ASSETS->GetColour("white"))
+, junk_nearby(font_small, "Space Junk Nearby: ...", ASSETS->GetColour("white"))
 {
 	bgcol = ASSETS->GetColour("hud_background0");
 
@@ -80,6 +83,10 @@ void HUD::Render()
 	text_button2.RenderSimple(col2, row1);
 	text_action2.RenderSimple(col2, row2);
 
+
+	ships_nearby.RenderSimple(10, height - 145);
+	junk_nearby.RenderSimple(10, height - 125);
+
 }
 
 void HUD::SetMode(Mode mode)
@@ -118,4 +125,16 @@ void HUD::RenderWarning_SelectPartJoin(SDL_Point pos)
 	//pos.y -= warning_select_part_first.GetHeight();
 
 	warning_select_part_join.RenderSimple(pos.x, pos.y);
+}
+
+
+void HUD::UpdateShipCount(int ships, int junk)
+{
+	std::stringstream ss1;
+	ss1 << "Ships Nearby: " << ships;
+	ships_nearby.SetText(ss1.str());
+
+	std::stringstream ss2;
+	ss2 << "Space Junk Nearby: " << junk;
+	junk_nearby.SetText(ss2.str());
 }

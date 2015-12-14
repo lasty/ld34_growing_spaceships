@@ -37,6 +37,8 @@ private:
 	Text warning_select_part_first;
 	Text warning_select_part_join;
 
+	Text ships_nearby;
+	Text junk_nearby;
 
 public:
 
@@ -50,6 +52,9 @@ public:
 
 	void RenderWarning_SelectPartFirst(SDL_Point pos);
 	void RenderWarning_SelectPartJoin(SDL_Point pos);
+
+	void UpdateShipCount(int ships, int junk);
+
 };
 
 

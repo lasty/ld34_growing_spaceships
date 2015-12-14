@@ -109,6 +109,12 @@ public:
 	glm::vec2 GetWorldPositionConnection(Connector *conn) const;
 
 	const auto & GetParts() const { return part_list; }
+
+	bool contains_ship_core = false;
+
+	bool IsShip() const { return contains_ship_core; }
+	bool IsJunk() const { return not contains_ship_core; }
+
 };
 
 

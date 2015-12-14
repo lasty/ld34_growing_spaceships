@@ -360,10 +360,13 @@ void Ship::RecalcIslands()
 void Ship::RecalcCenterOfGravity()
 {
 	//Recalculates center of rotation, and bounding circle
+	//calculates if ship has a core or not (if not it will be marked as space junk)
 
 	glm::vec2 center;
 	glm::vec2 world_center;
 	int num = 0;
+
+	contains_ship_core = false;
 
 	for(const auto & part : part_list)
 	{
@@ -372,6 +375,8 @@ void Ship::RecalcCenterOfGravity()
 			center += part->GetOffset();
 			world_center += ship_transform.GetWorldPosition(part->GetOffset());
 			num++;
+
+			if (part->GetName() == "core") contains_ship_core = true;
 		}
 	}
 
@@ -436,7 +441,7 @@ void Ship::CheckCollision(Ship *other, float dt)
 		glm::vec2 angle = pos2 - pos1;
 
 		//glm::vec2 force = -angle * 2.0f * dt;
-		glm::vec2 force = -angle * 0.025f * dt;
+		glm::vec2 force = -angle * 0.00025f * dt;
 
 		ApplyForce(force);
 		other->ApplyForce(-force);
@@ -478,6 +483,9 @@ void Ship::CheckCollision(Projectile *proj)
 
 				DeletePart(part.get());
 				proj->SetRemove();
+
+				RecalcConnections();
+				RecalcCenterOfGravity();
 				return;
 			}
 		}
@@ -527,6 +535,9 @@ void Ship::SetThrust(glm::vec2 thrust)
 void Ship::ApplyForce(glm::vec2 thrust)
 {
 	current_velocity += thrust;
+
+	///ship_transform.SetPositionRelative(thrust.x, thrust.y);
+
 }
 
 
