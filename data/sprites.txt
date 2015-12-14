@@ -1,3 +1,8 @@
 pointy sprites1 0 0 32 32 2
-core sprites1 32 0 32 32 2
-scaffold sprites1 0 32 32 32 2
+core sprites1 64 0 32 32 2
+laser sprites1 128 0 32 32 2
+gun1 sprites1 192 0 32 32 2
+armour sprites1 0 64 32 32 2
+scaffold sprites1 64 64 32 32 2
+missile sprites1 128 64 32 32 2
+gun2 sprites1 192 64 32 32 2

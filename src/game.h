@@ -9,7 +9,7 @@
 #include "hud.h"
 #include "globals.h"
 #include "tractorbeam.h"
-
+#include "projectile.h"
 
 #include <vector>
 #include <memory>
@@ -46,6 +46,8 @@ private:
 	std::vector<std::unique_ptr<Ship>> ship_list;
 
 	std::vector<std::unique_ptr<TractorBeam>> tractor_list;
+
+	std::vector<std::unique_ptr<Projectile>> projectile_list;
 
 	float rot = 0.0f;
 	float wallclock = 0.0f;
@@ -101,6 +103,7 @@ public:
 	void InvalidateShip(Ship *about_to_delete);
 
 	void SpawnRandomShip();
+	void SpawnRandomJunk();
 
 	void SpawnShip(const std::string &name, float x, float y, float rot);
 
@@ -110,6 +113,11 @@ public:
 
 	void UpdateTractors(float dt);
 	void RenderTractors();
+
+	void SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel);
+	void UpdateProjectiles(float dt);
+	void RenderProjectiles();
+
 
 	void SetShipCursor();
 
@@ -122,6 +130,8 @@ public:
 	void SwitchInputMode();
 
 	void SetMode(Mode new_mode);
+
+	void FireWeapons(int weapgroup);
 };
 
 

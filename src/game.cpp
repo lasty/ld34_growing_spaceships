@@ -70,6 +70,7 @@ void Game::OnKeyDown(SDL_Keycode key)
 	if (key == SDLK_r) rotating = not rotating;
 	if (key == SDLK_t) translating = not translating;
 	if (key == SDLK_n) SpawnRandomShip();
+	if (key == SDLK_j) SpawnRandomJunk();
 
 	if (key == SDLK_TAB or key == SDLK_SPACE or key == SDLK_KP_0 or key == SDLK_RETURN or key == SDLK_KP_ENTER)
 	{
@@ -189,7 +190,7 @@ void Game::Render()
 	RenderColour("background");
 	SDL_RenderClear(RENDERER);
 
-
+	//Other ships
 
 	for(auto &ship : ship_list)
 	{
@@ -202,6 +203,7 @@ void Game::Render()
 	}
 
 
+	//Player ship
 
 	if (player_ship.part_cursor and (mode == Mode::Scavenge))
 	{
@@ -224,8 +226,6 @@ void Game::Render()
 				hud.RenderWarning_SelectPartJoin(screenpos);
 			}
 		}
-
-
 	}
 	else
 	{
@@ -234,12 +234,10 @@ void Game::Render()
 
 
 	//Tractors
-
 	RenderTractors();
 
-
 	//Projectiles
-
+	RenderProjectiles();
 
 
 	//HUD
@@ -290,7 +288,7 @@ void Game::DoCommand1()
 {
 	if (mode == Mode::Combat)
 	{
-		DeleteShipPart();  //TODO
+		FireWeapons(1);
 	}
 	else if (mode == Mode::Scavenge)
 	{
@@ -303,7 +301,7 @@ void Game::DoCommand2()
 {
 	if (mode == Mode::Combat)
 	{
-		DeleteShipPart();  //TODO
+		FireWeapons(2);
 	}
 	else if (mode == Mode::Scavenge)
 	{
@@ -383,11 +381,18 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 
 void Game::SetupLevel()
 {
-	const int num_ships = 10;
+	const int num_ships = 1;
 	for (int i = 0; i < num_ships; i++)
 	{
 		SpawnRandomShip();
 	}
+
+	const int num_junk = 1;
+	for (int i = 0; i < num_junk; i++)
+	{
+		SpawnRandomJunk();
+	}
+
 
 	world_cam.SetZoom(2.0f);
 
@@ -407,6 +412,31 @@ void Game::SpawnRandomShip()
 
 	SpawnShip(ship_names.at(n), x, y, rot);
 }
+
+
+
+void Game::SpawnRandomJunk()
+{
+	std::vector<std::string> part_names { "pointy", "armour", "scaffold", "laser", "launcher" };
+	int n = rand() % part_names.size();
+
+	float x = rand() % 2000 - 1000;
+	float y = rand() % 2000 - 1000;
+	float rot = rand() % 360;
+
+	std::unique_ptr<Ship> ship { new Ship() };
+	ship->GetTransform().SetPosition(x, y);
+	ship->GetTransform().SetRotation(rot);
+	ship->SetHeading(rot);
+
+	ship->AddPart(part_names.at(n), 0.0f, 0.0f, 0.0f, false);
+	ship->RecalcConnections();
+	ship->RecalcCenterOfGravity();
+
+
+	ship_list.push_back(std::move(ship));
+}
+
 
 
 void Game::SpawnShip(const std::string &name, float x, float y, float rot)
@@ -515,6 +545,49 @@ void Game::RenderTractors()
 }
 
 
+void Game::UpdateProjectiles(float dt)
+{
+	for (auto & projectile : projectile_list)
+	{
+		projectile->Update(dt);
+	}
+
+	//TODO collisions
+
+	for(auto it = projectile_list.begin(); it != projectile_list.end(); )
+	{
+		if ((*it)->ShouldRemove())
+		{
+			it = projectile_list.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+}
+
+
+void Game::RenderProjectiles()
+{
+	for (auto & proj : projectile_list)
+	{
+		proj->Render(world_cam);
+		std::cout << "rendering projectile" << std::endl;
+	}
+}
+
+
+void Game::SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel)
+{
+	std::unique_ptr<Projectile> proj { new Projectile(name, pos, vel, 32.0f, 2.0f)};
+
+	projectile_list.push_back(std::move(proj));
+
+	std::cout << "Fire!" << std::endl;
+}
+
+
 void Game::InvalidateShipCursor()
 {
 	if (ship_cursor)
@@ -564,6 +637,8 @@ void Game::UpdateMoveables(float dt)
 	}
 
 	UpdateTractors(dt);
+
+	UpdateProjectiles(dt);
 }
 
 
@@ -614,4 +689,17 @@ void Game::SwitchInputMode()
 	{
 		SetMode(Mode::Scavenge);
 	}
+}
+
+void Game::FireWeapons(int weapgroup)
+{
+	std::string proj_name = weapgroup == 1 ? "laser" : "missile";
+
+	glm::vec2 start = player_ship.GetWorldPosition();
+	glm::vec2 target = mouse_world_cursor;
+
+	glm::vec2 vel = target - start;
+
+
+	SpawnProjectile(proj_name, start, vel);
 }

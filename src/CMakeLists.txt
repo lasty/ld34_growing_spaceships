@@ -16,7 +16,8 @@ set(SOURCE_FILES
         text.cpp text.h
         font.cpp font.h
         hud.cpp hud.h
-        tractorbeam.cpp tractorbeam.h)
+        tractorbeam.cpp tractorbeam.h
+        projectile.cpp projectile.h)
 
 add_executable(${LD34_TARGET_NAME} ${SOURCE_FILES})
 
