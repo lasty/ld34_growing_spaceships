@@ -113,10 +113,18 @@ Part::Part(const Part &copy, float x, float y, float rot)
 }
 
 
+void Part::Update(float dt)
+{
+	if (invisible_timer > 0.0f)
+	{
+		invisible_timer -= dt;
+	}
+}
+
 
 void Part::Render(Camera &cam, const Transform &transform)
 {
-	if (island == 1)
+	if (island == 1 and (invisible_timer <= 0.0f))
 	{
 		sprite_ref->Render(cam, offset.x, offset.y, rot, transform);
 	}

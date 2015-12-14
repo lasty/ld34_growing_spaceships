@@ -348,7 +348,7 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 	//Destroy surrounding parts
 	other_ship->DeletePartsAroundPart(other_part);
 
-	player_ship.AttachPartAtCursor(other_part->GetName());
+	player_ship.AttachPartAtCursor(other_part->GetName(), true);
 
 	//glm::vec2 attach_pos { connector_cursor->x, connector_cursor->y };
 	//float attach_rot = connector_cursor->rot;
@@ -358,10 +358,8 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 
 	//other_ship->enable_clipping = false;
 
-
-	glm::vec2 start_pos = other_ship->GetTransform().GetWorldPosition(other_part->GetOffset());
-
-	glm::vec2 end_pos { player_ship.connector_cursor->x, player_ship.connector_cursor->y };
+	glm::vec2 start_pos = other_ship->GetWorldPositionPart(other_part);
+	glm::vec2 end_pos = player_ship.GetWorldPositionConnection(player_ship.connector_cursor);
 
 	tractor_list.emplace_back(new TractorBeam{other_part, start_pos, end_pos});
 

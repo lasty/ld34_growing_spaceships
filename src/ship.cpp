@@ -99,7 +99,7 @@ void Ship::Deserialize(std::istream &in)
 
 		if (in.eof() or in.bad()) break;
 
-		AddPart(part_name, x, y, rot);
+		AddPart(part_name, x, y, rot, false);
 	}
 	RecalcConnections();
 	RecalcCenterOfGravity();
@@ -123,9 +123,14 @@ void Ship::Serialize(std::ostream &out)
 }
 
 
-void Ship::AddPart(const std::string &partname, float x, float y, float rot)
+void Ship::AddPart(const std::string &partname, float x, float y, float rot, bool delayed_start)
 {
 	std::unique_ptr<Part> part = std::unique_ptr<Part>{ new Part{ ASSETS->GetPart(partname), x, y, rot} };
+	if (delayed_start)
+	{
+		part->SetInvisibleTimer(TRACTOR_SPEED + 0.015f);
+	}
+
 	part_list.push_back(std::move(part));
 }
 
@@ -211,7 +216,7 @@ void Ship::SetConnectorCursor(glm::vec2 cursor)
 }
 
 
-void Ship::AttachPartAtCursor(const std::string &partname)
+void Ship::AttachPartAtCursor(const std::string &partname, bool delayed_start)
 {
 	if (not part_cursor) return;
 	if (not connector_cursor) return;
@@ -234,7 +239,7 @@ void Ship::AttachPartAtCursor(const std::string &partname)
 	//part_list.push_back(std::move(dummy_part));
 	//InvalidateCursor();
 
-	AddPart(partname, new_loc.x, new_loc.y, new_rot);
+	AddPart(partname, new_loc.x, new_loc.y, new_rot, delayed_start);
 	RecalcConnections();
 	RecalcCenterOfGravity();
 }
@@ -401,17 +406,20 @@ void Ship::RecalcCenterOfGravity()
 
 void Ship::Update(float dt)
 {
-
 	UpdateRotation(dt);
 
 	UpdatePosition(dt);
+
+	for(auto &part : part_list)
+	{
+		part->Update(dt);
+	}
 }
 
 
 void Ship::CheckCollision(Ship *other, float dt)
 {
 	if (not(enable_clipping and other->enable_clipping)) return;
-	return;  //XXX
 
 	const glm::vec2 &pos1 = ship_transform.GetPosition();
 	const glm::vec2 &pos2 = other->GetTransform().GetPosition();
@@ -497,18 +505,19 @@ glm::vec2 Ship::GetWorldPosition() const
 	return ship_transform.GetWorldPosition(glm::vec2{0.0f, 0.0f});
 }
 
+
 glm::vec2 Ship::GetWorldPositionPart(Part *part) const
 {
 	assert(part);
 	return ship_transform.GetWorldPosition(part->GetOffset());
 }
 
-glm::vec2 Ship::GetWorldPositionConnection(Part *part, Connector *conn) const
+
+glm::vec2 Ship::GetWorldPositionConnection(Connector *conn) const
 {
 	assert(conn);
 
-	glm::vec2 pos = GetWorldPositionPart(part);
-	pos.x += conn->x;
-	pos.y += conn->y;
-	return pos;
+	glm::vec2 pos { conn->x, conn->y};
+
+	return ship_transform.GetWorldPosition(pos);
 }

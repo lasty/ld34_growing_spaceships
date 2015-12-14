@@ -44,7 +44,7 @@ private:
 
 public:
 
-	void AddPart(const std::string &partname, float x, float y, float rot);
+	void AddPart(const std::string &partname, float x, float y, float rot, bool delayed_start);
 
 
 	void Render(Camera &cam, bool render_connectors, bool render_selected_part);
@@ -54,7 +54,7 @@ public:
 	void SetPartCursor(glm::vec2 cursor);
 	void SetConnectorCursor(glm::vec2 cursor);
 
-	void AttachPartAtCursor(const std::string &partname);
+	void AttachPartAtCursor(const std::string &partname, bool delayed_start);
 
 	void DeletePartAtCursor();
 	void DeletePartsAroundPart(Part *part);
@@ -104,7 +104,7 @@ public:
 
 	glm::vec2 GetWorldPosition() const;
 	glm::vec2 GetWorldPositionPart(Part *part) const;
-	glm::vec2 GetWorldPositionConnection(Part *part, Connector *conn) const;
+	glm::vec2 GetWorldPositionConnection(Connector *conn) const;
 
 };
 

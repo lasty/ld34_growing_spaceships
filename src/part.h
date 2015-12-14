@@ -70,6 +70,9 @@ private:
 
 public:
 
+	void Update(float dt);
+	void SetInvisibleTimer(float t) { invisible_timer = t; }
+
 	void Render(Camera &cam, const Transform & ship_transform);
 
 	void RenderSelected(Camera &cam, const Transform & ship_transform);
