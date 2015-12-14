@@ -108,6 +108,7 @@ public:
 	glm::vec2 GetWorldPositionPart(Part *part) const;
 	glm::vec2 GetWorldPositionConnection(Connector *conn) const;
 
+	const auto & GetParts() const { return part_list; }
 };
 
 

@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
 #include <iostream>
 
 
@@ -703,11 +704,30 @@ void Game::FireWeapons(int weapgroup)
 {
 	std::string proj_name = weapgroup == 1 ? "laser" : "missile";
 
-	glm::vec2 start = player_ship.GetWorldPosition();
-	glm::vec2 target = mouse_world_cursor;
+	std::string part_name = weapgroup == 1 ? "laser" : "launcher";
 
-	glm::vec2 vel = target - start;
+	for (const auto &part : player_ship.GetParts())
+	{
+		if (part->GetName() != part_name) continue;
 
+		glm::vec2 start = player_ship.GetWorldPositionPart(part.get());
 
-	SpawnProjectile(proj_name, start, vel);
+		glm::vec2 vel;
+
+		if (weapgroup == 1)
+		{
+			float angle = part->GetRot() + player_ship.GetTransform().GetRotation() - 90.0f;
+			vel.x = cosf(glm::radians(angle));
+			vel.y = sinf(glm::radians(angle));
+		}
+		else
+		{
+			glm::vec2 target = mouse_world_cursor;
+			vel = target - start;
+		}
+
+		SpawnProjectile(proj_name, start, vel);
+
+	}
+
 }
