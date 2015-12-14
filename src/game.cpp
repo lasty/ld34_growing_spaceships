@@ -67,8 +67,8 @@ void Game::OnKeyDown(SDL_Keycode key)
 	if (key == SDLK_KP_PLUS) world_cam.SetZoomRelative(0.25f);
 	if (key == SDLK_KP_MINUS) world_cam.SetZoomRelative(-0.25f);
 
-	if (key == SDLK_r) rotating = not rotating;
-	if (key == SDLK_t) translating = not translating;
+	//if (key == SDLK_r) rotating = not rotating;
+	//if (key == SDLK_t) translating = not translating;
 	if (key == SDLK_n) SpawnRandomShip();
 	if (key == SDLK_j) SpawnRandomJunk();
 

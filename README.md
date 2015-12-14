@@ -4,36 +4,48 @@ Ludum Dare 34
 
 Themes are "Growing", and "Two Button Controls"
 
-
 By Lasty
+
+Game not finished due to time (as per usual).
+
+
+TL;DR Controls
+--------------
+- WASD (Or arrows) to move
+- TAB to change modes (Combat, or Salvage)
+- Left click, Right click:  Depending on mode: tractor beam, or shoot
+- Mouse Wheel (Or KP+ KP-) Zoom camera
+- ESC Quit
+
+
+Since this is not finished, the developer/cheat keys are
+- N : Spawn new random ship
+- J : Spawn random part (Space Junk)
+- F5: Save current ship to ships/custom.txt
+- F9: Load the custom ship (Automatically loads on start anyway)
 
 
 Synopsis
 --------
+- A a 2D top-down space shooter.
+- Shoot enemy ships which explodes parts off.
+- Attach parts with your tractor beam to improve your ship.
 
-Will be a 2d topdown space shooter, which you can attach more parts to your player_ship (After you've blown them off enemy ships, of course)
 
-
-Plan Day 1
+Planed features that were cut
 ----------
-
-- Core Gameplay done
-
-
-Plan Day 2
-----------
-
-- Polish
-- Graphics
-- More Parts
-- More Enemies
-- More Ship Configurations
-
+Cut features due to time or complexity:
+- Sound and/or Music
+- Enemy AI
+- More part types, including armour pieces, shield pieces, thrusters
+- Energy management (Reactors, capacitors, can only shoot when charged)
+- Damage/Repair mechanic
+- World map, Space dock, buy/sell ships, economy, Cargo, Trading
+- Better GUI, and a tutorial
 
 
 Building
 --------
-
 You need two libraries, SDL2 and GLM
 If they cannot be found in the standard search paths, edit the toplevel CMakeLists.txt to give it the locations
 
