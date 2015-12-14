@@ -19,6 +19,9 @@ extern class Game * GAME;
 extern class Assets * ASSETS;
 
 
+constexpr float TRACTOR_SPEED = 0.3f;
+
+
 enum class Mode
 {
 	Scavenge, Combat

@@ -489,6 +489,26 @@ void Ship::UpdatePosition(float dt)
 	//current_velocity = set_velocity;
 
 	ship_transform.SetPositionRelative(current_velocity.x * 1000.0f * dt, current_velocity.y * 1000.0f * dt);
-
 }
 
+
+glm::vec2 Ship::GetWorldPosition() const
+{
+	return ship_transform.GetWorldPosition(glm::vec2{0.0f, 0.0f});
+}
+
+glm::vec2 Ship::GetWorldPositionPart(Part *part) const
+{
+	assert(part);
+	return ship_transform.GetWorldPosition(part->GetOffset());
+}
+
+glm::vec2 Ship::GetWorldPositionConnection(Part *part, Connector *conn) const
+{
+	assert(conn);
+
+	glm::vec2 pos = GetWorldPositionPart(part);
+	pos.x += conn->x;
+	pos.y += conn->y;
+	return pos;
+}

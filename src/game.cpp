@@ -233,6 +233,16 @@ void Game::Render()
 	}
 
 
+	//Tractors
+
+	RenderTractors();
+
+
+	//Projectiles
+
+
+
+	//HUD
 
 	RenderColour("blue");
 	//s.Render_Simple(mouse_cursor.x, mouse_cursor.y);
@@ -347,6 +357,13 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 	//part_list.back()->SetIsland(1);
 
 	//other_ship->enable_clipping = false;
+
+
+	glm::vec2 start_pos = other_ship->GetTransform().GetWorldPosition(other_part->GetOffset());
+
+	glm::vec2 end_pos { player_ship.connector_cursor->x, player_ship.connector_cursor->y };
+
+	tractor_list.emplace_back(new TractorBeam{other_part, start_pos, end_pos});
 
 	//other_ship->part_list.clear();
 	other_ship->DeletePart(other_part);
@@ -470,6 +487,36 @@ void Game::CheckForDeadShips()
 }
 
 
+void Game::UpdateTractors(float dt)
+{
+	for (auto & tractor : tractor_list)
+	{
+		tractor->Update(dt);
+	}
+
+	for(auto it = tractor_list.begin(); it != tractor_list.end(); )
+	{
+		if ((*it)->finished)
+		{
+			it = tractor_list.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
+}
+
+
+void Game::RenderTractors()
+{
+	for (auto & tractor : tractor_list)
+	{
+		tractor->Render(world_cam);
+	}
+}
+
+
 void Game::InvalidateShipCursor()
 {
 	if (ship_cursor)
@@ -517,6 +564,8 @@ void Game::UpdateMoveables(float dt)
 	{
 		ship->Update(dt);
 	}
+
+	UpdateTractors(dt);
 }
 
 

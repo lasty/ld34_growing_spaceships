@@ -100,6 +100,12 @@ public:
 	void UpdatePosition(float dt);
 
 	void ApplyForce(glm::vec2 thrust);
+
+
+	glm::vec2 GetWorldPosition() const;
+	glm::vec2 GetWorldPositionPart(Part *part) const;
+	glm::vec2 GetWorldPositionConnection(Part *part, Connector *conn) const;
+
 };
 
 

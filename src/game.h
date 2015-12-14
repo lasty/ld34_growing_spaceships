@@ -8,6 +8,7 @@
 #include "ship.h"
 #include "hud.h"
 #include "globals.h"
+#include "tractorbeam.h"
 
 
 #include <vector>
@@ -43,6 +44,8 @@ private:
 	Ship player_ship;
 
 	std::vector<std::unique_ptr<Ship>> ship_list;
+
+	std::vector<std::unique_ptr<TractorBeam>> tractor_list;
 
 	float rot = 0.0f;
 	float wallclock = 0.0f;
@@ -104,6 +107,9 @@ public:
 	void CheckForSplitShips();
 
 	void CheckForDeadShips();
+
+	void UpdateTractors(float dt);
+	void RenderTractors();
 
 	void SetShipCursor();
 

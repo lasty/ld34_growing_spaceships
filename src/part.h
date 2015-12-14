@@ -57,6 +57,8 @@ private:
 	int island = 0;
 	std::string part_name;
 
+	float invisible_timer = 0.0f;
+
 	glm::vec2 offset;
 	float rot = 0.0f;
 
@@ -86,6 +88,8 @@ public:
 	void SetOffsetRelative(const glm::vec2 &rel_offset);
 
 	float GetRot() const { return rot; }
+
+	Sprite * GetSprite() const { return sprite_ref; }
 
 	void SetIsland(int new_island) { island = new_island; }
 	int GetIsland() const { return island; }

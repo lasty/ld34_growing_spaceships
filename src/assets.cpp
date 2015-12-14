@@ -121,6 +121,9 @@ void Assets::SetupColours()
 	colour_list.emplace("grey", SDL_Color{192, 192, 192, 255});
 	colour_list.emplace("white", SDL_Color{255, 255, 255, 255});
 	colour_list.emplace("green", SDL_Color{32, 255, 32, 255});
+
+	colour_list.emplace("tractorbeam", SDL_Color{32, 255, 32, 255});
+
 }
 
 
