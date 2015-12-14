@@ -180,6 +180,14 @@ void Game::Update(float dt)
 	player_ship.SetConnectorCursor(mouse_world_cursor);
 
 
+	//Update camera
+	glm::vec2 track = player_ship.GetWorldPosition() + player_ship.GetWorldPosition() + mouse_world_cursor;
+	track /= 3.0f;
+	//track = player_ship.GetWorldPosition();
+	world_cam.SetTracking(-track);
+	world_cam.UpdateTracking(dt);
+
+
 	hud.Update(dt);
 
 }
@@ -597,6 +605,9 @@ void Game::InvalidateShipCursor()
 	}
 
 	ship_cursor = nullptr;
+
+	//locked_on_ship_cursor = nullptr;
+	//locked_on_part_cursor = nullptr;
 }
 
 
@@ -673,14 +684,16 @@ void Game::SetMode(Mode new_mode)
 {
 	mode = new_mode;
 
+	InvalidateShipCursor();
+	locked_on_ship_cursor = nullptr;
+	locked_on_part_cursor = nullptr;
+
 	if (mode == Mode::Scavenge)
 	{
-		InvalidateShipCursor();
 		rotating = false;
 	}
 	else if (mode == Mode::Combat)
 	{
-		InvalidateShipCursor();
 		rotating = true;
 	}
 
@@ -699,6 +712,7 @@ void Game::SwitchInputMode()
 		SetMode(Mode::Scavenge);
 	}
 }
+
 
 void Game::FireWeapons(int weapgroup)
 {

@@ -41,6 +41,8 @@ private:
 	glm::vec2 viewport_size;
 
 
+	glm::vec2 track_position;
+
 public:
 
 	void SetOffset(float x, float y);
@@ -62,6 +64,11 @@ public:
 
 
 	glm::vec2 ScreenToWorld(int x, int y);
+
+
+	void SetTracking(glm::vec2 track);
+
+	void UpdateTracking(float dt);
 
 };
 

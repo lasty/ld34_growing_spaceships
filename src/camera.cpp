@@ -127,3 +127,20 @@ glm::vec2 Camera::ScreenToWorld(int x, int y)
 
 	return glm::vec2{p.x, p.y};
 }
+
+
+void Camera::SetTracking(glm::vec2 track)
+{
+	track_position = track;
+}
+
+
+void Camera::UpdateTracking(float dt)
+{
+	dt = glm::clamp(dt, 0.0f, 0.1f);
+	//dt = 0.1f;
+	float mix = 3.0f * dt;
+
+	offset = glm::mix(offset, track_position, mix );
+	CalcMatrixes();
+}
