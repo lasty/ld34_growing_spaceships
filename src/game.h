@@ -144,7 +144,7 @@ public:
 
 	void SetMode(Mode new_mode);
 
-	void FireWeapons(Ship &ship, int weapgroup);
+	void FireWeapons(Ship &ship, int weapgroup, glm::vec2 target);
 
 
 	float timer_ship_spawn = 1.0f;

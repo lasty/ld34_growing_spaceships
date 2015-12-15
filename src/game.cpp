@@ -303,7 +303,7 @@ void Game::DoCommand1()
 {
 	if (mode == Mode::Combat)
 	{
-		FireWeapons(player_ship, 1);
+		FireWeapons(player_ship, 1, mouse_world_cursor);
 	}
 	else if (mode == Mode::Scavenge)
 	{
@@ -316,7 +316,7 @@ void Game::DoCommand2()
 {
 	if (mode == Mode::Combat)
 	{
-		FireWeapons(player_ship, 2);
+		FireWeapons(player_ship, 2, mouse_world_cursor);
 	}
 	else if (mode == Mode::Scavenge)
 	{
@@ -331,8 +331,11 @@ void Game::AttachPartToShip()
 
 	if (ship_cursor)  //if targeting other ship
 	{
-		locked_on_ship_cursor = ship_cursor;
-		locked_on_part_cursor = ship_cursor->part_cursor;
+		if (ship_cursor->IsJunk())  //only strip parts of destroyed ships
+		{
+			locked_on_ship_cursor = ship_cursor;
+			locked_on_part_cursor = ship_cursor->part_cursor;
+		}
 	}
 	else  //else attaching to player ship
 	{
@@ -731,7 +734,7 @@ void Game::SwitchInputMode()
 }
 
 
-void Game::FireWeapons(Ship &ship, int weapgroup)
+void Game::FireWeapons(Ship &ship, int weapgroup, glm::vec2 target)
 {
 	std::string proj_name = weapgroup == 1 ? "laser" : "missile";
 
@@ -753,7 +756,7 @@ void Game::FireWeapons(Ship &ship, int weapgroup)
 		}
 		else
 		{
-			glm::vec2 target = mouse_world_cursor;
+			//glm::vec2 target = mouse_world_cursor;
 			vel = target - start;
 		}
 

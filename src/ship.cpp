@@ -12,6 +12,7 @@
 #include <fstream>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/gtc/random.hpp>
 
 #include <algorithm>
 //#include <iostream>
@@ -599,22 +600,34 @@ void Ship::EnemyShipAI(float dt, const glm::vec2 &player_pos)
 	ai_timer_move -= dt;
 	if (ai_timer_move <= 0.0f)
 	{
-		ai_timer_move = rand_time(2.0f, 10.0f);
+		ai_timer_move = rand_time(0.5f, 2.0f);
 
 		if (rand_bool())
 		{
+			//stop
+			SetThrust({0.0f, 0.0f});
+		}
+		else
+		if (rand_bool())
+		{
 			//move towards player
+			glm::vec2 dir = player_pos - GetWorldPosition();
+			dir = glm::normalize(dir) * 0.5f;
+
+			SetThrust(dir);
 		}
 		else
 		{
 			//move to random location
+			glm::vec2 rand = glm::diskRand(0.5f);
+			SetThrust(rand);
 		}
 	}
 
 	ai_timer_rotate -= dt;
 	if (ai_timer_rotate <= 0.0f)
 	{
-		ai_timer_move = rand_time(2.0f, 10.0f);
+		ai_timer_rotate = rand_time(0.5f, 2.0f);
 
 		if (rand_bool())
 		{
@@ -632,17 +645,17 @@ void Ship::EnemyShipAI(float dt, const glm::vec2 &player_pos)
 	ai_timer_shoot -= dt;
 	if (ai_timer_shoot <= 0.0f)
 	{
-		ai_timer_move = rand_time(2.0f, 10.0f);
+		ai_timer_shoot = rand_time(1.0f, 3.0f);
 
 		if (rand_bool())
 		{
 			//shoot group 1
-			GAME->FireWeapons(*this, 1);
+			GAME->FireWeapons(*this, 1, player_pos);
 		}
 		else
 		{
 			//shoot group 2
-			GAME->FireWeapons(*this, 2);
+			GAME->FireWeapons(*this, 2, player_pos);
 		}
 
 	}
