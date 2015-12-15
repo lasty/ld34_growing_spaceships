@@ -14,7 +14,7 @@
 #include <glm/trigonometric.hpp>
 
 #include <algorithm>
-#include <iostream>
+//#include <iostream>
 
 
 Ship::Ship()
@@ -68,6 +68,7 @@ std::unique_ptr<Ship> Ship::SplitShip()
 
 void Ship::Clear()
 {
+	InvalidateCursor();
 	part_list.clear();
 }
 
@@ -353,7 +354,7 @@ void Ship::RecalcIslands()
 
 	needs_splitting = (island_no > 1);
 
-	std::cout << "RecalcIslands: found " << island_no << " islands.  (" << part_list.size() << " parts)" << std::endl;
+	//std::cout << "RecalcIslands: found " << island_no << " islands.  (" << part_list.size() << " parts)" << std::endl;
 }
 
 

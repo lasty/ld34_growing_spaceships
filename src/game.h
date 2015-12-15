@@ -102,8 +102,10 @@ public:
 
 	void InvalidateShip(Ship *about_to_delete);
 
-	void SpawnRandomShip();
-	void SpawnRandomJunk();
+	glm::vec2 GetSpawnLocation(glm::vec2 offset, float radius);
+
+	void SpawnRandomShip(float radius = 1000.0f);
+	void SpawnRandomJunk(float radius = 1000.0f);
 
 	void SpawnShip(const std::string &name, float x, float y, float rot);
 
@@ -134,7 +136,10 @@ public:
 	void FireWeapons(int weapgroup);
 
 
-	void CheckAndPopulateRandomShips();
+	float timer_ship_spawn = 1.0f;
+	float timer_junk_spawn = 0.5f;
+
+	void CheckAndPopulateRandomShips(float dt);
 
 
 	void DoEnemyShipAI(float dt);

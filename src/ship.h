@@ -61,6 +61,8 @@ public:
 	void DeletePartsAroundPart(Part *part);
 	void DeletePart(Part *part);
 
+	void MarkForRemoval() { Clear(); }
+
 	Part * part_cursor = nullptr;
 	Connector * connector_cursor = nullptr;
 

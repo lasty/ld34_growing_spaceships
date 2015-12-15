@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/gtc/random.hpp>
 #include <iostream>
 
 
@@ -147,7 +148,7 @@ void Game::Update(float dt)
 
 	UpdateMoveables(dt);
 
-	CheckAndPopulateRandomShips();
+	CheckAndPopulateRandomShips(dt);
 
 	CheckForCollisions(dt);
 
@@ -410,32 +411,40 @@ void Game::SetupLevel()
 
 }
 
-
-void Game::SpawnRandomShip()
+glm::vec2 Game::GetSpawnLocation(glm::vec2 offset, float radius)
 {
-	std::vector<std::string> ship_names { "pointy", "ship_one", "custom"};
+	glm::vec2 circ = glm::circularRand(radius);
+	circ += offset;
+
+	circ += glm::circularRand(radius / 10.0f);
+
+	return circ;
+}
+
+void Game::SpawnRandomShip(float radius)
+{
+	std::vector<std::string> ship_names { "pointy", "ship_one", "custom"};  //TODO get names from ships.txt list
 	int n = rand() % ship_names.size();
 
-	float x = rand() % 2000 - 1000;
-	float y = rand() % 2000 - 1000;
+	glm::vec2 pos = GetSpawnLocation(player_ship.GetWorldPosition(), radius);
+
 	float rot = rand() % 360;
 
-	SpawnShip(ship_names.at(n), x, y, rot);
+	SpawnShip(ship_names.at(n), pos.x, pos.y, rot);
 }
 
 
 
-void Game::SpawnRandomJunk()
+void Game::SpawnRandomJunk(float radius)
 {
 	std::vector<std::string> part_names { "pointy", "armour", "scaffold", "laser", "launcher" };
 	int n = rand() % part_names.size();
 
-	float x = rand() % 2000 - 1000;
-	float y = rand() % 2000 - 1000;
+	glm::vec2 pos = GetSpawnLocation(player_ship.GetWorldPosition(), radius);
 	float rot = rand() % 360;
 
 	std::unique_ptr<Ship> ship { new Ship() };
-	ship->GetTransform().SetPosition(x, y);
+	ship->GetTransform().SetPosition(pos.x, pos.y);
 	ship->GetTransform().SetRotation(rot);
 	ship->SetHeading(rot);
 
@@ -749,19 +758,48 @@ void Game::FireWeapons(int weapgroup)
 
 
 
-void Game::CheckAndPopulateRandomShips()
+void Game::CheckAndPopulateRandomShips(float dt)
 {
 	int num_ships = 0;
 	int num_junk = 0;
 
+	float radius_spawn = 4000.0f;
+	float radius_remove = 6000.0f;
+	int ship_quota = 15;
+	int junk_quota = 20;
+
+
 	for (auto &ship : ship_list)
 	{
+		if (ship->ShouldRemove()) continue;
+
+		float distance_to_player = glm::distance(player_ship.GetWorldPosition(), ship->GetWorldPosition());
+		if (distance_to_player > radius_remove)
+		{
+			ship->MarkForRemoval();
+			continue;
+		}
+
 		if (ship->IsShip()) num_ships++;
 		if (ship->IsJunk()) num_junk++;
 	}
 
 	hud.UpdateShipCount(num_ships, num_junk);
 
+	timer_ship_spawn -= dt;
+
+	if (num_ships < ship_quota and timer_ship_spawn <= 0.0f)
+	{
+		SpawnRandomShip(radius_spawn);
+		timer_ship_spawn = (rand() % 100 / 100.0f) * 3.0f;
+	}
+
+	timer_junk_spawn -= dt;
+	if (num_junk < junk_quota and timer_junk_spawn <= 0.0f)
+	{
+		SpawnRandomJunk(radius_spawn);
+		timer_junk_spawn = (rand() % 100 / 100.0f) * 3.0f;
+	}
 
 }
 
