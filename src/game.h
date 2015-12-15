@@ -151,7 +151,7 @@ public:
 	void FireWeapons(Ship &ship, int weapgroup, glm::vec2 target);
 
 
-	float timer_ship_spawn = 1.0f;
+	float timer_ship_spawn = 10.0f;
 	float timer_junk_spawn = 0.5f;
 	bool running_ai = true;
 

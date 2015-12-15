@@ -41,7 +41,9 @@ Game::Game()
 	assert(GAME == nullptr);
 	GAME = this;
 
-	SetupLevel();
+	world_cam.SetZoom(2.0f);
+
+	NewGame();
 }
 
 
@@ -192,6 +194,7 @@ void Game::Update(float dt)
 	glm::vec2 track = player_ship.GetWorldPosition() + player_ship.GetWorldPosition() + mouse_world_cursor;
 	track /= 3.0f;
 	//track = player_ship.GetWorldPosition();
+	//std::cout << "player ship pos = " << player_ship.GetWorldPosition().x << "  ,  " << player_ship.GetWorldPosition().y << std::endl;
 	world_cam.SetTracking(-track);
 	world_cam.UpdateTracking(dt);
 
@@ -409,7 +412,7 @@ void Game::NewGame()
 
 	//Reset Player Ship
 	player_ship.Clear();
-	std::ifstream in{DATA_PATH+"/ships/custom.txt"};
+	std::ifstream in{DATA_PATH+"/ships/medium.txt"};
 	player_ship.Deserialize(in);
 
 	player_ship.GetTransform().SetPosition(0.0f, 0.0f);
@@ -422,6 +425,8 @@ void Game::NewGame()
 	ship_list.clear();
 	star_list.clear();
 	tractor_list.clear();
+	projectile_list.clear();
+
 
 	//call start up for level
 	SetupLevel();
@@ -453,7 +458,6 @@ void Game::SetupLevel()
 	}
 
 
-	world_cam.SetZoom(2.0f);
 
 	SetMode(Mode::Combat);
 
@@ -857,7 +861,8 @@ void Game::CheckAndPopulateRandomShips(float dt)
 	if (num_ships < ship_quota and timer_ship_spawn <= 0.0f)
 	{
 		SpawnRandomShip(radius_spawn);
-		timer_ship_spawn = (rand() % 100 / 100.0f) * 3.0f;
+		timer_ship_spawn = (rand() % 100 / 100.0f) * 7.0f;
+		if (num_ships <= 2) timer_ship_spawn -= 1.0f;
 	}
 
 	timer_junk_spawn -= dt;

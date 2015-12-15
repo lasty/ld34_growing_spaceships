@@ -383,6 +383,8 @@ void Ship::RecalcCenterOfGravity()
 		}
 	}
 
+	if (num == 0) return;
+
 	center /= float(num);
 	world_center /= float(num);
 
