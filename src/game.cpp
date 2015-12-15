@@ -739,6 +739,8 @@ void Game::CheckForCollisions(float dt)
 		{
 			ship->CheckCollision(proj.get());
 		}
+
+		player_ship.CheckCollision(proj.get());
 	}
 }
 
