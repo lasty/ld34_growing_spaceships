@@ -100,6 +100,10 @@ public:
 
 	void ResizeWindow(int w, int h);
 
+	bool game_over_flag = false;
+	void NewGame();
+
+	void CheckForGameOver();
 
 	void SetupLevel();
 

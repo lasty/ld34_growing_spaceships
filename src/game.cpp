@@ -196,6 +196,8 @@ void Game::Update(float dt)
 	world_cam.UpdateTracking(dt);
 
 
+	CheckForGameOver();
+
 	hud.Update(dt);
 
 }
@@ -401,6 +403,40 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 }
 
 
+void Game::NewGame()
+{
+	game_over_flag = false;
+
+	//Reset Player Ship
+	player_ship.Clear();
+	std::ifstream in{DATA_PATH+"/ships/custom.txt"};
+	player_ship.Deserialize(in);
+
+	player_ship.GetTransform().SetPosition(0.0f, 0.0f);
+	player_ship.GetTransform().SetRotation(0.0f);
+
+	//Reset Camera
+	world_cam.SetOffset(0.0f, 0.0f);
+
+	//Reset world
+	ship_list.clear();
+	star_list.clear();
+	tractor_list.clear();
+
+	//call start up for level
+	SetupLevel();
+}
+
+
+void Game::CheckForGameOver()
+{
+	if (player_ship.IsJunk())
+	{
+		game_over_flag = true;
+
+		SetMode(Mode::GameOver);
+	}
+}
 
 void Game::SetupLevel()
 {
@@ -419,7 +455,7 @@ void Game::SetupLevel()
 
 	world_cam.SetZoom(2.0f);
 
-	SetMode(Mode::Scavenge);
+	SetMode(Mode::Combat);
 
 }
 
@@ -717,11 +753,18 @@ void Game::SetMode(Mode new_mode)
 
 	if (mode == Mode::Scavenge)
 	{
+		translating = true;
 		rotating = false;
 	}
 	else if (mode == Mode::Combat)
 	{
+		translating = true;
 		rotating = true;
+	}
+	else if (mode == Mode::GameOver)
+	{
+		rotating = false;
+		translating = false;
 	}
 
 	hud.SetMode(mode);
@@ -734,9 +777,13 @@ void Game::SwitchInputMode()
 	{
 		SetMode(Mode::Combat);
 	}
-	else
+	else if (mode == Mode::Combat)
 	{
 		SetMode(Mode::Scavenge);
+	}
+	else if (mode == Mode::GameOver)
+	{
+		NewGame();
 	}
 }
 

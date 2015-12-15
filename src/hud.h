@@ -40,6 +40,9 @@ private:
 	Text ships_nearby;
 	Text junk_nearby;
 
+	//Text text_game_over;
+	//Text text_game_over2;
+
 public:
 
 	void Resize(int width, int height);
@@ -54,6 +57,9 @@ public:
 	void RenderWarning_SelectPartJoin(SDL_Point pos);
 
 	void UpdateShipCount(int ships, int junk);
+
+	//void RenderGameOver1();
+	//void RenderGameOver2();
 
 };
 

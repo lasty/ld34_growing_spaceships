@@ -1,12 +1,12 @@
 custom_ship_name
 10
-core -9.53674e-007 70.4 0
-scaffold -9.53674e-007 6.40002 0
+core 2.66394e-006 70.4 0
+scaffold 2.66394e-006 6.40002 0
 scaffold 64 70.4 90
 scaffold -64 70.4 -90
-scaffold -9.53674e-007 134.4 180
-scaffold -9.53674e-007 -57.6001 0
-scaffold -8.58307e-006 -121.6 90
+scaffold 2.66394e-006 -57.6001 0
+scaffold -4.96546e-006 -121.6 90
 armour 64 6.40002 0
-laser -8.58307e-006 -185.6 0
+laser -4.96546e-006 -185.6 0
 armour -64 6.40002 -90
+launcher -1.3359e-007 134.4 180

@@ -31,6 +31,10 @@ HUD::HUD()
 
 , ships_nearby(font_small, "Ships Nearby: ...", ASSETS->GetColour("white"))
 , junk_nearby(font_small, "Space Junk Nearby: ...", ASSETS->GetColour("white"))
+
+//, text_game_over(font1, "Game Over")
+//, text_game_over2(font_small, "Press TAB/SPACE to start new game")
+
 {
 	bgcol = ASSETS->GetColour("hud_background0");
 
@@ -107,6 +111,18 @@ void HUD::SetMode(Mode mode)
 		text_control_mode.SetText("MODE: Combat!");
 		text_action1.SetText("LASER");
 		text_action2.SetText("MISSILE");
+	}
+
+	text_help1.SetText("Use WASD/Arrows to move, TAB/SPACE: Change mode");
+
+	if (mode == Mode::GameOver)
+	{
+		bgcol = ASSETS->GetColour("hud_background_gameover");
+
+		text_control_mode.SetText("GAME OVER!");
+		text_action1.SetText("...");
+		text_action2.SetText("...");
+		text_help1.SetText("Press TAB/SPACE to start new game");
 	}
 }
 

@@ -24,6 +24,6 @@ constexpr float TRACTOR_SPEED = 0.3f;
 
 enum class Mode
 {
-	Scavenge, Combat
+	Scavenge, Combat, GameOver
 };
 
