@@ -149,6 +149,7 @@ void Game::Update(float dt)
 	UpdateMoveables(dt);
 
 	CheckAndPopulateRandomShips(dt);
+	UpdateStars(dt);
 
 	CheckForCollisions(dt);
 
@@ -200,6 +201,9 @@ void Game::Render()
 {
 	RenderColour("background");
 	SDL_RenderClear(RENDERER);
+
+	//Background starfield
+	RenderStars();
 
 	//Other ships
 
@@ -803,3 +807,42 @@ void Game::CheckAndPopulateRandomShips(float dt)
 
 }
 
+
+Star * NewStar(glm::vec2 pos, float radius)
+{
+	pos += glm::diskRand(radius);
+
+	SDL_Colour col = ASSETS->GetColour( rand() % 2 == 0 ? "white" : "grey");
+	return new Star{pos, col};
+}
+
+void Game::UpdateStars(float dt)
+{
+	unsigned star_quota = 1000;
+	float radius_remove = 4000.0f;
+
+	for(auto &star : star_list)
+	{
+		float distance_to_player = glm::distance(player_ship.GetWorldPosition(), star->pos);
+
+		if (distance_to_player > radius_remove)
+		{
+			star.reset( NewStar(player_ship.GetWorldPosition(), radius_remove) );
+		}
+	}
+
+	while (star_list.size() < star_quota)
+	{
+		star_list.emplace_back( NewStar(player_ship.GetWorldPosition(), radius_remove));
+	}
+}
+
+void Game::RenderStars()
+{
+	for(auto &star : star_list)
+	{
+		RenderColour(star->colour);
+		auto p = world_cam.WorldToScreen(star->pos.x, star->pos.y);
+		SDL_RenderDrawPoint(RENDERER, p.x, p.y);
+	}
+}

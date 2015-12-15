@@ -26,6 +26,14 @@ public:
 };
 
 
+class Star
+{
+public:
+	glm::vec2 pos;
+	SDL_Color colour;
+};
+
+
 
 class Game
 {
@@ -48,6 +56,9 @@ private:
 	std::vector<std::unique_ptr<TractorBeam>> tractor_list;
 
 	std::vector<std::unique_ptr<Projectile>> projectile_list;
+
+	std::vector<std::unique_ptr<Star>> star_list;
+
 
 	float rot = 0.0f;
 	float wallclock = 0.0f;
@@ -141,6 +152,9 @@ public:
 
 	void CheckAndPopulateRandomShips(float dt);
 
+	void UpdateStars(float dt);
+
+	void RenderStars();
 
 	void DoEnemyShipAI(float dt);
 
