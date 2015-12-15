@@ -1,0 +1,16 @@
+custom_ship_name
+14
+core 0 77.7143 0
+scaffold -64 77.7143 -90
+scaffold 64 77.7143 90
+scaffold 128 77.7143 90
+scaffold -128 77.7143 -90
+pointy 192 77.7143 90
+pointy -192 77.7143 -90
+launcher 0 13.7143 0
+scaffold 0 -50.2857 0
+scaffold 0 -114.286 0
+scaffold 0 -178.286 0
+pointy -128 13.7143 0
+pointy 0 -242.286 0
+pointy 128 13.7143 0

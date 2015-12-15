@@ -25,6 +25,8 @@ private:
 	void SetupColours();
 
 	void SetupParts();
+	void SetupShips();
+
 
 	std::map<std::string, Surface> surface_list;
 
@@ -35,6 +37,8 @@ private:
 	std::map<std::string, Font> font_list;
 
 	std::map<std::string, SDL_Color> colour_list;
+
+	std::vector<std::string> ship_list;
 
 public:
 
@@ -47,6 +51,9 @@ public:
 	SDL_Color & GetColour(const std::string &name);
 
 	Part & GetPart(const std::string &name);
+
+	std::string GetRandomShipName();
+
 };
 
 

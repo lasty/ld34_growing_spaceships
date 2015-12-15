@@ -92,6 +92,11 @@ void Game::OnKeyDown(SDL_Keycode key)
 		player_ship.Deserialize(in);
 	}
 
+	if (key == SDLK_F1)
+	{
+		running_ai = not running_ai;
+	}
+
 }
 
 
@@ -399,13 +404,13 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 
 void Game::SetupLevel()
 {
-	const int num_ships = 1;
-	for (int i = 0; i < num_ships; i++)
-	{
-		SpawnRandomShip();
-	}
+	//const int num_ships = 1;
+	//for (int i = 0; i < num_ships; i++)
+	//{
+	//	SpawnRandomShip();
+	//}
 
-	const int num_junk = 1;
+	const int num_junk = 15;
 	for (int i = 0; i < num_junk; i++)
 	{
 		SpawnRandomJunk();
@@ -430,14 +435,13 @@ glm::vec2 Game::GetSpawnLocation(glm::vec2 offset, float radius)
 
 void Game::SpawnRandomShip(float radius)
 {
-	std::vector<std::string> ship_names { "pointy", "ship_one", "custom"};  //TODO get names from ships.txt list
-	int n = rand() % ship_names.size();
+	std::string ship_name = ASSETS->GetRandomShipName();
 
 	glm::vec2 pos = GetSpawnLocation(player_ship.GetWorldPosition(), radius);
 
 	float rot = rand() % 360;
 
-	SpawnShip(ship_names.at(n), pos.x, pos.y, rot);
+	SpawnShip(ship_name, pos.x, pos.y, rot);
 }
 
 
@@ -664,7 +668,10 @@ void Game::UpdateMoveables(float dt)
 
 		if (ship->IsShip())  //dont run AI on junk
 		{
-			ship->EnemyShipAI(dt, player_ship.GetWorldPosition());
+			if (running_ai)
+			{
+				ship->EnemyShipAI(dt, player_ship.GetWorldPosition());
+			}
 		}
 	}
 
@@ -775,7 +782,7 @@ void Game::CheckAndPopulateRandomShips(float dt)
 
 	float radius_spawn = 4000.0f;
 	float radius_remove = 6000.0f;
-	int ship_quota = 15;
+	int ship_quota = 7;
 	int junk_quota = 20;
 
 

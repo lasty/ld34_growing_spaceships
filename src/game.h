@@ -149,6 +149,7 @@ public:
 
 	float timer_ship_spawn = 1.0f;
 	float timer_junk_spawn = 0.5f;
+	bool running_ai = true;
 
 	void CheckAndPopulateRandomShips(float dt);
 

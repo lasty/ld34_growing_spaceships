@@ -1,2 +1,10 @@
 ship_one
-core
+pointy
+medium
+medium2
+medium3
+medium4
+square1
+square2
+square3
+custom

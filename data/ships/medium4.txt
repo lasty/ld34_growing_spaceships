@@ -1,0 +1,21 @@
+custom_ship_name
+19
+core 9.05991e-006 40.4211 0
+scaffold -64 40.4211 -90
+scaffold 64 40.4211 90
+scaffold 128 40.4211 90
+scaffold -128 40.4211 -90
+pointy 192 40.4211 90
+pointy -192 40.4211 -90
+pointy 128 -23.579 0
+armour 9.05991e-006 -23.5789 0
+armour 9.05991e-006 -87.579 0
+armour 9.05991e-006 -151.579 0
+armour 9.05991e-006 -215.579 0
+laser 9.05991e-006 -279.579 0
+pointy -128 -23.579 0
+scaffold 64 104.421 180
+scaffold 6.19888e-006 104.421 180
+scaffold -64 104.421 -180
+pointy 128 104.421 90
+pointy -128 104.421 -90

@@ -32,6 +32,7 @@ Assets::Assets()
 
 	SetupParts();
 
+	SetupShips();
 }
 
 
@@ -146,6 +147,30 @@ void Assets::SetupParts()
 }
 
 
+void Assets::SetupShips()
+{
+	std::ifstream in{DATA_PATH + "ships.txt"};
+	assert(in);
+
+	while (in and in.good())
+	{
+		std::string name;
+
+		in >> name;
+
+		if (in.bad() or in.eof() or name.empty()) break;
+		std::cout << "ship name: " << name << std::endl;
+
+		ship_list.push_back(name);
+	}
+}
+
+
+std::string Assets::GetRandomShipName()
+{
+	int index = rand() % ship_list.size();
+	return ship_list.at(index);
+}
 
 
 Surface &Assets::GetSurface(const std::string &name)
