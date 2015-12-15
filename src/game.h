@@ -127,7 +127,7 @@ public:
 	void UpdateTractors(float dt);
 	void RenderTractors();
 
-	void SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel);
+	void SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel, Ship *ignore_ship);
 	void UpdateProjectiles(float dt);
 	void RenderProjectiles();
 
@@ -144,7 +144,7 @@ public:
 
 	void SetMode(Mode new_mode);
 
-	void FireWeapons(int weapgroup);
+	void FireWeapons(Ship &ship, int weapgroup);
 
 
 	float timer_ship_spawn = 1.0f;
@@ -155,9 +155,6 @@ public:
 	void UpdateStars(float dt);
 
 	void RenderStars();
-
-	void DoEnemyShipAI(float dt);
-
 };
 
 

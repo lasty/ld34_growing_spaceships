@@ -16,6 +16,7 @@
 #include <algorithm>
 //#include <iostream>
 
+#include "game.h"
 
 Ship::Ship()
 {
@@ -456,6 +457,8 @@ void Ship::CheckCollision(Ship *other, float dt)
 void Ship::CheckCollision(Projectile *proj)
 {
 	assert(proj);
+	if (proj->ignore_this_ship == this) return;
+
 	//if (not proj->IsAlive()) return;
 
 	const glm::vec2 &pos1 = ship_transform.GetPosition();
@@ -571,4 +574,77 @@ glm::vec2 Ship::GetWorldPositionConnection(Connector *conn) const
 	glm::vec2 pos { conn->x, conn->y};
 
 	return ship_transform.GetWorldPosition(pos);
+}
+
+
+float rand_time(float min, float max)
+{
+	float range = max-min;
+	return (rand()%100/100.0f) * range + min;
+}
+
+
+bool rand_bool()
+{
+	return (rand() %2 == 0);
+}
+
+float random_rotation()
+{
+	return (rand()%360);
+}
+
+void Ship::EnemyShipAI(float dt, const glm::vec2 &player_pos)
+{
+	ai_timer_move -= dt;
+	if (ai_timer_move <= 0.0f)
+	{
+		ai_timer_move = rand_time(2.0f, 10.0f);
+
+		if (rand_bool())
+		{
+			//move towards player
+		}
+		else
+		{
+			//move to random location
+		}
+	}
+
+	ai_timer_rotate -= dt;
+	if (ai_timer_rotate <= 0.0f)
+	{
+		ai_timer_move = rand_time(2.0f, 10.0f);
+
+		if (rand_bool())
+		{
+			//set heading towards player
+			SetHeading(player_pos);
+		}
+		else
+		{
+			//set random heading
+			SetHeading(random_rotation());
+		}
+	}
+
+
+	ai_timer_shoot -= dt;
+	if (ai_timer_shoot <= 0.0f)
+	{
+		ai_timer_move = rand_time(2.0f, 10.0f);
+
+		if (rand_bool())
+		{
+			//shoot group 1
+			GAME->FireWeapons(*this, 1);
+		}
+		else
+		{
+			//shoot group 2
+			GAME->FireWeapons(*this, 2);
+		}
+
+	}
+
 }

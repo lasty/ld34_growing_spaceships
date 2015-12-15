@@ -8,14 +8,19 @@
 
 #include "sprite.h"
 
+class Ship;
+
 class Projectile
 {
 public:
-	Projectile(const std::string &name, glm::vec2 start, glm::vec2 velocity, float radius, float ttl);
+	Projectile(const std::string &name, glm::vec2 start, glm::vec2 velocity, float radius, float ttl, Ship *ignore_ship);
+
+	Ship * ignore_this_ship = nullptr;
 
 private:
 
 	Sprite *sprite_ref = nullptr;
+
 
 	glm::vec2 position;
 	glm::vec2 velocity;

@@ -117,6 +117,13 @@ public:
 	bool IsShip() const { return contains_ship_core; }
 	bool IsJunk() const { return not contains_ship_core; }
 
+
+	float ai_timer_move = 1.0f;
+	float ai_timer_rotate = 0.5f;
+	float ai_timer_shoot = 2.0f;
+
+	void EnemyShipAI(float dt, const glm::vec2 &player_position);
+
 };
 
 

@@ -303,7 +303,7 @@ void Game::DoCommand1()
 {
 	if (mode == Mode::Combat)
 	{
-		FireWeapons(1);
+		FireWeapons(player_ship, 1);
 	}
 	else if (mode == Mode::Scavenge)
 	{
@@ -316,7 +316,7 @@ void Game::DoCommand2()
 {
 	if (mode == Mode::Combat)
 	{
-		FireWeapons(2);
+		FireWeapons(player_ship, 2);
 	}
 	else if (mode == Mode::Scavenge)
 	{
@@ -600,11 +600,9 @@ void Game::RenderProjectiles()
 }
 
 
-void Game::SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel)
+void Game::SpawnProjectile(const std::string &name, glm::vec2 pos, glm::vec2 vel, Ship *ignore_ship)
 {
-
-
-	std::unique_ptr<Projectile> proj { new Projectile(name, pos, vel, 32.0f, 2.0f)};
+	std::unique_ptr<Projectile> proj { new Projectile(name, pos, vel, 32.0f, 2.0f, ignore_ship)};
 
 	projectile_list.push_back(std::move(proj));
 
@@ -660,6 +658,11 @@ void Game::UpdateMoveables(float dt)
 	for (auto & ship : ship_list)
 	{
 		ship->Update(dt);
+
+		if (ship->IsShip())  //dont run AI on junk
+		{
+			ship->EnemyShipAI(dt, player_ship.GetWorldPosition());
+		}
 	}
 
 	UpdateTractors(dt);
@@ -728,23 +731,23 @@ void Game::SwitchInputMode()
 }
 
 
-void Game::FireWeapons(int weapgroup)
+void Game::FireWeapons(Ship &ship, int weapgroup)
 {
 	std::string proj_name = weapgroup == 1 ? "laser" : "missile";
 
 	std::string part_name = weapgroup == 1 ? "laser" : "launcher";
 
-	for (const auto &part : player_ship.GetParts())
+	for (const auto &part : ship.GetParts())
 	{
 		if (part->GetName() != part_name) continue;
 
-		glm::vec2 start = player_ship.GetWorldPositionPart(part.get());
+		glm::vec2 start = ship.GetWorldPositionPart(part.get());
 
 		glm::vec2 vel;
 
 		if (weapgroup == 1)
 		{
-			float angle = part->GetRot() + player_ship.GetTransform().GetRotation() - 90.0f;
+			float angle = part->GetRot() + ship.GetTransform().GetRotation() - 90.0f;
 			vel.x = cosf(glm::radians(angle));
 			vel.y = sinf(glm::radians(angle));
 		}
@@ -754,7 +757,7 @@ void Game::FireWeapons(int weapgroup)
 			vel = target - start;
 		}
 
-		SpawnProjectile(proj_name, start, vel);
+		SpawnProjectile(proj_name, start, vel, &ship);
 
 	}
 
@@ -816,6 +819,7 @@ Star * NewStar(glm::vec2 pos, float radius)
 	return new Star{pos, col};
 }
 
+
 void Game::UpdateStars(float dt)
 {
 	unsigned star_quota = 1000;
@@ -836,6 +840,7 @@ void Game::UpdateStars(float dt)
 		star_list.emplace_back( NewStar(player_ship.GetWorldPosition(), radius_remove));
 	}
 }
+
 
 void Game::RenderStars()
 {

@@ -11,8 +11,9 @@
 #include "assets.h"
 
 
-Projectile::Projectile(const std::string &name, glm::vec2 start, glm::vec2 velocity, float radius, float ttl)
+Projectile::Projectile(const std::string &name, glm::vec2 start, glm::vec2 velocity, float radius, float ttl, Ship *ignore_ship)
 {
+	ignore_this_ship = ignore_ship;
 	sprite_ref = &ASSETS->GetSprite(name);
 
 	this->position = start;
