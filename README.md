@@ -1,13 +1,13 @@
 
-Ludum Dare 34
-=============
-
-Themes are "Growing", and "Two Button Controls"
-
+Growing Spaceships
+==================
 By Lasty
 
-Game not finished due to time (as per usual).
+Game made in 72 hours For Ludum Dare 34 Game Jam.
 
+Themes were "Growing", and "Two Button Controls"
+
+As usual ran out of time, basic gameplay is here, but lacks depth and polish.  There is no sound.
 
 Synopsis
 --------
@@ -21,25 +21,29 @@ TL;DR Controls
 - WASD (Or arrows) to move
 - TAB to change modes (Combat, or Salvage)
 - Left click, Right click:  Depending on mode: tractor beam, or shoot
-- Mouse Wheel (Or KP+ KP-) Zoom camera
+- Mouse Wheel (Or Keypad +/-) Zoom camera
 - ESC Quit
 
 
-Since this is not finished, the developer/cheat keys are
+Developer/cheat keys are:
 - N : Spawn new random ship
 - J : Spawn random part (Space Junk)
 - F5: Save current ship to ships/custom.txt
 - F9: Load the custom ship (Automatically loads on start anyway)
+- F1: Toggle AI processing
+
+
+Patch 1:
+--------
+Some post release tweaks:
+- Better starting ship, a 10 second calm before enemy ships spawn.
+- Fixed disappearing player ship bug.
 
 
 Known Issues
 ----------
-
-There is no sound
-
-If all player parts get destroyed, the game stops rendering and does not recover.
-
-Occasional rare crash when attaching parts that get destroyed before being tractored in (May have been fixed)
+- There is no sound
+- Occasional rare crash when attaching parts that get destroyed before being tractored in (May have been fixed)
 
 
 Planed features that were cut
@@ -61,3 +65,7 @@ If they cannot be found in the standard search paths, edit the toplevel CMakeLis
 Requires Clang or GCC with C++ 14 features
 
 SDL2 requires Mixer, Image, and TTF extensions to be installed also
+
+Source Code is available on GitHub:  https://github.com/lasty/ld34_growing_spaceships
+
+My build system was Windows 10 (64 bit), using MSYS2, Mingw64, gcc 5.2.0
