@@ -9,6 +9,13 @@ By Lasty
 Game not finished due to time (as per usual).
 
 
+Synopsis
+--------
+- A a 2D top-down space shooter.
+- Shoot enemy ships which explodes parts off.
+- Attach parts with your tractor beam to improve your ship.
+
+
 TL;DR Controls
 --------------
 - WASD (Or arrows) to move
@@ -25,18 +32,20 @@ Since this is not finished, the developer/cheat keys are
 - F9: Load the custom ship (Automatically loads on start anyway)
 
 
-Synopsis
---------
-- A a 2D top-down space shooter.
-- Shoot enemy ships which explodes parts off.
-- Attach parts with your tractor beam to improve your ship.
+Known Issues
+----------
+
+There is no sound
+
+If all player parts get destroyed, the game stops rendering and does not recover.
+
+Occasional rare crash when attaching parts that get destroyed before being tractored in (May have been fixed)
 
 
 Planed features that were cut
 ----------
 Cut features due to time or complexity:
 - Sound and/or Music
-- Enemy AI
 - More part types, including armour pieces, shield pieces, thrusters
 - Energy management (Reactors, capacitors, can only shoot when charged)
 - Damage/Repair mechanic
