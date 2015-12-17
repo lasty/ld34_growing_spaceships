@@ -32,7 +32,7 @@ glm::vec2 WASD::GetVec() const
 
 
 Game::Game()
-: player_ship("custom")
+: player_ship("core")
 //: player_ship("pointy")
 //: player_ship("core")
 {
@@ -43,7 +43,7 @@ Game::Game()
 
 	world_cam.SetZoom(3.0f);
 
-	NewGame();
+	NewGame(true);
 }
 
 
@@ -97,6 +97,13 @@ void Game::OnKeyDown(SDL_Keycode key)
 	if (key == SDLK_F1)
 	{
 		running_ai = not running_ai;
+	}
+
+
+	if (key == SDLK_F2)
+	{
+		tutorial_enabled = false;
+		NewGame(false);
 	}
 
 }
@@ -200,13 +207,15 @@ void Game::Update(float dt)
 	track /= 3.0f;
 
 	//Adjust for GUI at the bottom of the screen
-	track -= world_cam.ScreenToWorld(0, 0) - world_cam.ScreenToWorld(0, 50);
+	track -= world_cam.ScreenToWorld(0, 0) - world_cam.ScreenToWorld(0, hud.GetHudSize() / 2);
 
 	//track = player_ship.GetWorldPosition();
 	//std::cout << "player ship pos = " << player_ship.GetWorldPosition().x << "  ,  " << player_ship.GetWorldPosition().y << std::endl;
 	world_cam.SetTracking(-track);
 	world_cam.UpdateTracking(dt);
 
+
+	if (tutorial_enabled) CheckTutorialConditions();
 
 	CheckForGameOver();
 
@@ -244,22 +253,6 @@ void Game::Render()
 		player_ship.RenderShipSelected(world_cam);
 
 		player_ship.Render(world_cam, (bool) locked_on_part_cursor, false);
-
-		if (showing_scavenge_hints > 0)
-		{
-			auto worldpos = player_ship.GetTransform().GetWorldPosition({0, 0});
-			worldpos.y += player_ship.GetBoundingCircle();
-			auto screenpos = world_cam.WorldToScreen(worldpos.x, worldpos.y);
-
-			if (not locked_on_part_cursor)
-			{
-				hud.RenderWarning_SelectPartFirst(screenpos);
-			}
-			else
-			{
-				hud.RenderWarning_SelectPartJoin(screenpos);
-			}
-		}
 	}
 	else
 	{
@@ -342,6 +335,11 @@ void Game::Render()
 
 	//HUD
 	hud.Render();
+
+	if (tutorial_enabled)
+	{
+		hud.RenderTutorial();
+	}
 
 
 	SDL_RenderPresent(RENDERER);
@@ -473,18 +471,29 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 	locked_on_ship_cursor = nullptr;
 	locked_on_part_cursor = nullptr;
 
-	showing_scavenge_hints--;
-
 }
 
 
-void Game::NewGame()
+void Game::NewGame(bool run_tutorial)
 {
-	game_over_flag = false;
+	std::string whatship;
+
+	if (run_tutorial)
+	{
+		whatship = "pointy";
+		tutorial_enabled = true;
+		timer_ship_spawn = 2.0f;
+	}
+	else
+	{
+		timer_ship_spawn = 8.0f;
+		whatship = ASSETS->GetRandomShipName();
+	}
+
 
 	//Reset Player Ship
 	player_ship.Clear();
-	std::ifstream in{DATA_PATH+"/ships/medium.txt"};
+	std::ifstream in{DATA_PATH+"/ships/"+whatship+".txt"};
 	player_ship.Deserialize(in);
 
 	player_ship.GetTransform().SetPosition(0.0f, 0.0f);
@@ -507,10 +516,8 @@ void Game::NewGame()
 
 void Game::CheckForGameOver()
 {
-	if (player_ship.IsJunk())
+	if (player_ship.IsJunk() and mode != Mode::GameOver)
 	{
-		game_over_flag = true;
-
 		SetMode(Mode::GameOver);
 	}
 }
@@ -529,6 +536,11 @@ void Game::SetupLevel()
 		SpawnRandomJunk();
 	}
 
+
+	if (tutorial_enabled)
+	{
+		SetTutorial(1);
+	}
 
 
 	SetMode(Mode::Combat);
@@ -870,18 +882,34 @@ void Game::SwitchInputMode()
 	}
 	else if (mode == Mode::GameOver)
 	{
-		NewGame();
+		NewGame(false);
 	}
 }
 
 
 void Game::FireWeapons(Ship &ship, int weapgroup, glm::vec2 target)
 {
-	std::string proj_name = weapgroup == 1 ? "laser" : "missile";
+	std::string proj_name;
+	std::string part_name;
+	std::string sound_name;
 
-	std::string part_name = weapgroup == 1 ? "laser" : "launcher";
+	if (weapgroup == 1)
+	{
+		proj_name = "laser";
+		part_name = "laser";
 
-	PlayWorldSound(weapgroup == 1 ? "laser" : "missile", ship.GetWorldPosition());
+		sound_name = ship.GetNumLasers() ? "laser" : "error";
+	}
+	else if (weapgroup == 2)
+	{
+		proj_name = "missile";
+		part_name = "launcher";
+
+		sound_name = ship.GetNumMissiles() ? "missile" : "error";
+	}
+
+
+	PlayWorldSound(sound_name, ship.GetWorldPosition());
 
 
 	for (const auto &part : ship.GetParts())
@@ -914,6 +942,8 @@ void Game::FireWeapons(Ship &ship, int weapgroup, glm::vec2 target)
 
 void Game::CheckAndPopulateRandomShips(float dt)
 {
+	if (tutorial_enabled) return;
+
 	int num_ships = 0;
 	int num_junk = 0;
 
@@ -1014,4 +1044,143 @@ void Game::PlayWorldSound(const std::string &name, const glm::vec2 &location)
 	loudness = glm::clamp(loudness, 0.0f, 1.0f) * MASTER_VOLUME;
 
 	sound.PlayWithVolume(loudness);
+}
+
+
+void Game::CheckTutorialConditions()
+{
+	switch(tutorial_step)
+	{
+		case 1:
+			if (mode == Mode::Scavenge)
+				SetTutorial(2);
+			break;
+
+		case 2:
+			if (player_ship.CountNumParts("pointy") <= 3)
+				SetTutorial(3);
+			break;
+
+		case 3:
+			if (player_ship.GetNumLasers())  //shortcut when pressing F9
+			{
+				SetTutorial(4);
+			}
+
+			if (locked_on_part_cursor and locked_on_part_cursor->GetName() == "laser")
+				SetTutorial(4);
+			break;
+
+		case 4:
+			if (player_ship.GetNumLasers())
+				SetTutorial(5);
+			break;
+
+		case 5:
+			if (player_ship.GetNumMissiles())
+				SetTutorial(6);
+			break;
+
+		case 6:
+			if (mode == Mode::Combat)
+			{
+				SetTutorial(7);
+
+				glm::vec2 pos = GetSpawnLocation(player_ship.GetWorldPosition(), 1000.0f);
+				float rot = rand() % 360;
+				SpawnShip("ship_one", pos.x, pos.y, rot);
+			}
+			break;
+
+		case 7:
+			if (GetNumActiveShips() == 0)
+			{
+				SpawnRandomShip(2000.0f);
+				SetTutorial(8);
+			}
+			break;
+
+			case 8:
+				if (GetNumActiveShips() == 0)
+				{
+					SetTutorial(0);
+				}
+			break;
+	}
+}
+
+
+int Game::GetNumActiveShips()
+{
+	int num_ships = 0;
+	for (auto &ship : ship_list)
+	{
+		if (ship->ShouldRemove()) continue;
+
+		if (ship->IsShip()) num_ships++;
+	}
+	return num_ships;
+}
+
+
+void Game::SetTutorial(int n)
+{
+	constexpr int n_max = 8;
+
+	if (n == 0 or n > n_max)
+	{
+		tutorial_enabled = false;
+		return;
+	}
+
+	tutorial_enabled = true;
+	tutorial_step = n;
+
+	std::string tutorial1;
+	std::string tutorial2;
+
+	switch(n)
+	{
+		case 1:
+			tutorial1 = "Your ship has no weapons...  Let's fix that.";
+			tutorial2 = ">> Press [TAB] to change to SALVAGE mode";
+			break;
+
+		case 2:
+			tutorial1 = "This ship is ugly, let's first remove some of those pointy triangle pieces.";
+			tutorial2 = ">> [RIGHT CLICK]: Remove ship pieces to make room";
+			break;
+
+		case 3:
+			tutorial1 = "Now, Find a LASER weapon (Red) floating in space, and select it";
+			tutorial2 = ">> [LEFT CLICK] on a LASER weapon to lock-on with the Tractor Beam";
+			break;
+
+		case 4:
+			tutorial1 = "Now find a suitable spot to attach it to on your ship.";
+			tutorial2 = ">> [LEFT CLICK] on your ship.  (Take note of the orientation)";
+			break;
+
+		case 5:
+			tutorial1 = "Now repeat the process with a MISSILE LAUNCHER (Blue)";
+			tutorial2 = ">> Attach a missile launcher to your ship";
+			break;
+
+		case 6:
+			tutorial1 = "Congratulations you are now armed.  You can also try out some armour if you like";
+			tutorial2 = ">> Press [TAB] to return to COMBAT mode";
+			break;
+
+		case 7:
+			tutorial1 = "Now for some target practice.  Ships will keep flying until their core is destroyed.";
+			tutorial2 = ">> [LEFT CLICK] Fire Lasers.  [RIGHT CLICK] Fire missiles.";
+			break;
+
+		case 8:
+			tutorial1 = "Here they come, Good Luck!";
+			tutorial2 = ">> [Mouse Scroll Wheel] Zoom in/out.  [W][A][S][D] Move Ship.";
+			break;
+	}
+
+	hud.SetTutorial(n, n_max, tutorial1, tutorial2);
 }

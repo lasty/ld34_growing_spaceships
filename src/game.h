@@ -75,8 +75,6 @@ private:
 	Ship * locked_on_ship_cursor = nullptr;
 	Part * locked_on_part_cursor = nullptr;
 
-	int showing_scavenge_hints = 5;
-
 public:
 	bool GetRunning() const { return running; }
 
@@ -100,8 +98,7 @@ public:
 
 	void ResizeWindow(int w, int h);
 
-	bool game_over_flag = false;
-	void NewGame();
+	void NewGame(bool run_tutorial);
 
 	void CheckForGameOver();
 
@@ -162,6 +159,15 @@ public:
 	void RenderStars();
 
 	void PlayWorldSound(const std::string &name, const glm::vec2 &location);
+
+
+	bool tutorial_enabled = false;
+	int tutorial_step = 0;
+
+	void CheckTutorialConditions();
+	void SetTutorial(int n);
+	int GetNumActiveShips();
+
 };
 
 

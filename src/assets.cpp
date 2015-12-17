@@ -102,9 +102,11 @@ void Assets::SetupFonts()
 {
 	std::string prefix = DATA_PATH + "fonts/";
 
-	font_list.emplace("mono", Font{prefix+"Roboto_Mono/RobotoMono-Regular.ttf", 32});
+	//font_list.emplace("mono", Font{prefix+"Roboto_Mono/RobotoMono-Regular.ttf", 32});
 
 	font_list.emplace("small", Font{prefix+"Roboto_Slab/RobotoSlab-Regular.ttf", 16});
+
+	font_list.emplace("medium", Font{prefix+"Roboto_Slab/RobotoSlab-Regular.ttf", 20});
 
 	font_list.emplace("hud", Font{prefix+"Roboto_Slab/RobotoSlab-Regular.ttf", 32});
 
@@ -125,6 +127,7 @@ void Assets::SetupColours()
 	colour_list.emplace("grey", SDL_Color{192, 192, 192, 255});
 	colour_list.emplace("white", SDL_Color{255, 255, 255, 255});
 	colour_list.emplace("green", SDL_Color{32, 255, 32, 255});
+	colour_list.emplace("black", SDL_Color{32, 32, 32, 255});
 
 	colour_list.emplace("tractorbeam", SDL_Color{32, 255, 32, 255});
 

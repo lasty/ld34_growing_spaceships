@@ -25,6 +25,6 @@ constexpr float MASTER_VOLUME = 0.4f;
 
 enum class Mode
 {
-	Scavenge, Combat, GameOver
+	Scavenge, Combat, GameOver, MainMenu
 };
 

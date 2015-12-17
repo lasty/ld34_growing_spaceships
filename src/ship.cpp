@@ -367,6 +367,8 @@ void Ship::RecalcCenterOfGravity()
 	int num = 0;
 
 	contains_ship_core = false;
+	num_lasers = 0;
+	num_missiles = 0;
 
 	for(const auto & part : part_list)
 	{
@@ -377,6 +379,9 @@ void Ship::RecalcCenterOfGravity()
 			num++;
 
 			if (part->GetName() == "core") contains_ship_core = true;
+
+			if (part->GetName() == "laser") num_lasers++;
+			if (part->GetName() == "launcher") num_missiles++;
 		}
 	}
 
@@ -601,6 +606,16 @@ glm::vec2 Ship::GetWorldPositionConnection(Connector *conn) const
 }
 
 
+int Ship::CountNumParts(const std::string &name) const
+{
+	int num = 0;
+	for(auto &part : part_list)
+	{
+		if (part->GetName() == name) num++;
+	}
+	return num;
+}
+
 float rand_time(float min, float max)
 {
 	float range = max-min;
@@ -673,12 +688,18 @@ void Ship::EnemyShipAI(float dt, const glm::vec2 &player_pos)
 		if (rand_bool())
 		{
 			//shoot group 1
-			GAME->FireWeapons(*this, 1, player_pos);
+			if (GetNumLasers())
+			{
+				GAME->FireWeapons(*this, 1, player_pos);
+			}
 		}
 		else
 		{
 			//shoot group 2
-			GAME->FireWeapons(*this, 2, player_pos);
+			if (GetNumMissiles())
+			{
+				GAME->FireWeapons(*this, 2, player_pos);
+			}
 		}
 
 	}

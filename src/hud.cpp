@@ -11,9 +11,11 @@
 #include "globals.h"
 
 #include <sstream>
+#include <glm/common.hpp>
 
 HUD::HUD()
 : font1(ASSETS->GetFont("hud"))
+, font_med(ASSETS->GetFont("medium"))
 , font_small(ASSETS->GetFont("small"))
 
 , text_help1(font_small, "Use WASD/Arrows to move, TAB/SPACE: Change mode", ASSETS->GetColour("white"))
@@ -26,14 +28,22 @@ HUD::HUD()
 , text_action2(font1, "...")
 
 
-, warning_select_part_first(font_small, "Step 1: Select A Destroyed Ship Part To Attach", ASSETS->GetColour("hud_background0"))
-, warning_select_part_join(font_small, "Step 2: Select Attachment Point", ASSETS->GetColour("hud_background0"))
+, tutorial0(font_med, "Tutorial:", ASSETS->GetColour("green"))
+, tutorial1(font_small, "Your ship has no weapons", ASSETS->GetColour("black"))
+, tutorial2(font_small, "RIGHT CLICK - Do Stuff", ASSETS->GetColour("hud_background1"))
 
-, ships_nearby(font_small, "Ships Nearby: ...", ASSETS->GetColour("white"))
-, junk_nearby(font_small, "Space Junk Nearby: ...", ASSETS->GetColour("white"))
+, ships_nearby(font_small, "Press F2 to skip tutorial", ASSETS->GetColour("white"))
+, junk_nearby(font_small, "(You can Zoom in with mouse wheel)", ASSETS->GetColour("white"))
 
 //, text_game_over(font1, "Game Over")
 //, text_game_over2(font_small, "Press TAB/SPACE to start new game")
+
+, Title_1(font1, "Growing Spaceships")
+, Title_2(font_small, "By Lasty,  for Ludum Dare game Jam #34")
+
+, Menu_Choose_Ship(font1, "Choose your Starting Ship:")
+, Menu_Tutorial(font1, ">>Tutorial<<")
+, Menu_Exit(font1, "Exit")
 
 {
 	bgcol = ASSETS->GetColour("hud_background0");
@@ -128,22 +138,6 @@ void HUD::SetMode(Mode mode)
 }
 
 
-void HUD::RenderWarning_SelectPartFirst(SDL_Point pos)
-{
-	pos.x -= warning_select_part_first.GetWidth() / 2;
-	//pos.y -= warning_select_part_first.GetHeight();
-
-	warning_select_part_first.RenderSimple(pos.x, pos.y);
-}
-
-
-void HUD::RenderWarning_SelectPartJoin(SDL_Point pos)
-{
-	pos.x -= warning_select_part_join.GetWidth() / 2;
-	//pos.y -= warning_select_part_first.GetHeight();
-
-	warning_select_part_join.RenderSimple(pos.x, pos.y);
-}
 
 
 void HUD::UpdateShipCount(int ships, int junk)
@@ -155,4 +149,55 @@ void HUD::UpdateShipCount(int ships, int junk)
 	std::stringstream ss2;
 	ss2 << "Space Junk Nearby: " << junk;
 	junk_nearby.SetText(ss2.str());
+}
+
+
+int HUD::GetHudSize() const
+{
+	int h = 100;
+
+	if (tutorial_enabled)
+	{
+		h += tutorial0.GetHeight() + tutorial1.GetHeight() + tutorial2.GetHeight();
+	}
+
+	return h;
+}
+
+
+void HUD::SetTutorial(int n, int m, const std::string &text1, const std::string text2)
+{
+	std::stringstream ss;
+	ss << "Tutorial:  (" << n << " of " << m <<")";
+	tutorial0.SetText(ss.str());
+	tutorial1.SetText(text1);
+	tutorial2.SetText(text2);
+}
+
+
+void HUD::RenderTutorial()
+{
+	int b = 8;
+	int w = glm::max(tutorial1.GetWidth(), tutorial2.GetWidth()) + 2 * b;
+	int h = tutorial0.GetHeight() + tutorial1.GetHeight() + tutorial2.GetHeight() + (4 * b);
+
+	SDL_Rect rect { int((width/2) - (w / 2)), int(height - 100 - h - b), w, h};
+	RenderColour("hud_background0");
+
+	SDL_RenderFillRect(RENDERER, &rect);
+	RenderColour("hud_background_sep");
+	SDL_RenderDrawRect(RENDERER, &rect);
+
+	rect.x += b;
+	rect.y += b;
+
+	tutorial0.RenderSimple(rect.x, rect.y);
+
+	rect.y += b + tutorial0.GetHeight();
+
+	tutorial1.RenderSimple(rect.x, rect.y);
+
+	rect.y += b + tutorial1.GetHeight();
+
+	tutorial2.RenderSimple(rect.x, rect.y);
 }

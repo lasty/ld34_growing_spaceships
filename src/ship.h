@@ -43,6 +43,8 @@ private:
 
 	float bounding_circle = 1.0f;
 
+
+
 public:
 
 	void AddPart(const std::string &partname, float x, float y, float rot, bool delayed_start);
@@ -117,6 +119,12 @@ public:
 	bool IsShip() const { return contains_ship_core; }
 	bool IsJunk() const { return not contains_ship_core; }
 
+	int num_lasers = 0;
+	int num_missiles = 0;
+
+	int GetNumLasers() const { return num_lasers; }
+	int GetNumMissiles() const { return num_missiles; }
+	int CountNumParts(const std::string &name) const;
 
 	float ai_timer_move = 1.0f;
 	float ai_timer_rotate = 0.5f;

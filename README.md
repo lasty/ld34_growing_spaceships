@@ -7,7 +7,9 @@ Game made in 72 hours For Ludum Dare 34 Game Jam.
 
 Themes were "Growing", and "Two Button Controls"
 
-As usual ran out of time, basic gameplay is here, but lacks depth and polish.  There is no sound.
+- Patch 1 fixes some critical issues
+- Post-competition Patch 2 adds a lot more polish (Sounds and a Tutorial)
+
 
 Synopsis
 --------
@@ -16,7 +18,7 @@ Synopsis
 - Attach parts with your tractor beam to improve your ship.
 
 
-TL;DR Controls
+Controls
 --------------
 - WASD (Or arrows) to move
 - TAB to change modes (Combat, or Salvage)
@@ -29,8 +31,9 @@ Developer/cheat keys are:
 - N : Spawn new random ship
 - J : Spawn random part (Space Junk)
 - F5: Save current ship to ships/custom.txt
-- F9: Load the custom ship (Automatically loads on start anyway)
+- F9: Load the custom ship
 - F1: Toggle AI processing
+- F2: New game with a random ship (Also skips tutorial)
 
 
 Patch 1:
@@ -42,7 +45,7 @@ Some post release tweaks:
 
 Patch 2:
 --------
-(Post compo update)
+(Post competition update)
 - Added in some sounds.  (Really wish I spent some time during comp to do this,
 because it really helps with the game immersion)
 - Some bugfixes:
@@ -55,17 +58,21 @@ because it really helps with the game immersion)
 - Gameplay changes:
   - Changed "scrap" function to "detach": easily remove parts from player ship without destroying them.
   - Implemented the Armour block, will take 2 shots to destroy.
+  - Implemented a Tutorial for first time running.
+  - Starting ship is randomized.
 
 
 Planed features that were cut
 ----------
 Cut features due to time or complexity:
 - Music
-- More part types, including armour pieces, shield pieces, thrusters
+- Connect more than 1 piece at a time, and angled connections (eg at 45 degrees)
+- More part types, including shield pieces, thrusters, turreted weapons
 - Energy management (Reactors, capacitors, can only shoot when charged)
 - Damage/Repair mechanic
 - World map, Space dock, buy/sell ships, economy, Cargo, Trading
-- Better GUI, and a tutorial
+- Better GUI, AI
+- Particles, explosions
 
 
 Building

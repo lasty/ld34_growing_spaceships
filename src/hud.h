@@ -22,6 +22,7 @@ private:
 	SDL_Color bgcol;
 
 	Font &font1;
+	Font &font_med;
 	Font &font_small;
 
 	Text text_help1;
@@ -34,14 +35,22 @@ private:
 	Text text_action1;
 	Text text_action2;
 
-	Text warning_select_part_first;
-	Text warning_select_part_join;
+	bool tutorial_enabled = false;
+	Text tutorial0;
+	Text tutorial1;
+	Text tutorial2;
 
 	Text ships_nearby;
 	Text junk_nearby;
 
-	//Text text_game_over;
-	//Text text_game_over2;
+
+	Text Title_1;
+	Text Title_2;
+
+	Text Menu_Choose_Ship;
+	Text Menu_Tutorial;
+	Text Menu_Exit;
+
 
 public:
 
@@ -53,14 +62,15 @@ public:
 
 	void SetMode(Mode mode);
 
-	void RenderWarning_SelectPartFirst(SDL_Point pos);
-	void RenderWarning_SelectPartJoin(SDL_Point pos);
-
 	void UpdateShipCount(int ships, int junk);
 
-	//void RenderGameOver1();
-	//void RenderGameOver2();
+	void SetTutorial(int n, int m, const std::string &text1, const std::string text2);
 
+	void RenderTutorial();
+
+	void RenderMainMenu();
+
+	int GetHudSize() const;
 };
 
 
