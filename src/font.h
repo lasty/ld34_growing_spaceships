@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 
 #include <memory>
+#include <string>
 
 class Font
 {

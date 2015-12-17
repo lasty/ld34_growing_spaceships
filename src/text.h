@@ -9,6 +9,8 @@
 #include "font.h"
 #include "camera.h"
 
+#include <string>
+
 class Text : public Surface
 {
 public:

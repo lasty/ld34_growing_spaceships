@@ -23,5 +23,5 @@ set(SOURCE_FILES
 
 add_executable(${LD34_TARGET_NAME} ${SOURCE_FILES})
 
-target_link_libraries(${LD34_TARGET_NAME} SDL2Main SDL2)
+target_link_libraries(${LD34_TARGET_NAME} SDL2_MAIN SDL2 GLM)
 
