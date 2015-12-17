@@ -1059,21 +1059,21 @@ void Game::CheckTutorialConditions()
 		case 2:
 			if (player_ship.CountNumParts("pointy") <= 3)
 				SetTutorial(3);
+			else if (mode == Mode::Combat)
+				SetTutorial(1);
 			break;
 
 		case 3:
-			if (player_ship.GetNumLasers())  //shortcut when pressing F9
-			{
-				SetTutorial(4);
-			}
-
 			if (locked_on_part_cursor and locked_on_part_cursor->GetName() == "laser")
 				SetTutorial(4);
 			break;
 
 		case 4:
+
 			if (player_ship.GetNumLasers())
 				SetTutorial(5);
+			else if (not (locked_on_part_cursor and locked_on_part_cursor->GetName() == "laser"))
+				SetTutorial(3);
 			break;
 
 		case 5:
