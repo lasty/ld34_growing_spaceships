@@ -139,6 +139,8 @@ void Part::RenderSelected(Camera &cam, const Transform &transform)
 
 	RenderColour("blue");
 	RenderCircleRotated(cam, this_part_world_pos.x, this_part_world_pos.y, 32, transform.GetWorldRotation(rot));
+	RenderColour("white");
+	RenderCircleRotated(cam, this_part_world_pos.x, this_part_world_pos.y, 42, transform.GetWorldRotation(rot));
 
 	//RenderConnectors(cam, transform);
 

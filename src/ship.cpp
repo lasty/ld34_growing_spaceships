@@ -270,19 +270,6 @@ void Ship::DetachPartAtCursor()
 }
 
 
-void Ship::DeletePartsAroundPart(Part *part)
-{
-	if (not part) return;
-	for(auto & conn : part->GetConnectors())
-	{
-		if (conn.is_connected)
-		{
-			DeletePart(conn.connects_to);
-		}
-	}
-}
-
-
 void Ship::DeletePart(Part *part)
 {
 	if (not part) return;

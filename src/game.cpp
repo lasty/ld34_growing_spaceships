@@ -41,7 +41,7 @@ Game::Game()
 	assert(GAME == nullptr);
 	GAME = this;
 
-	world_cam.SetZoom(2.0f);
+	world_cam.SetZoom(3.0f);
 
 	NewGame();
 }
@@ -158,7 +158,6 @@ void Game::Update(float dt)
 
 	CheckForCollisions(dt);
 
-
 	CheckForSplitShips();
 
 	CheckForDeadShips();
@@ -227,14 +226,14 @@ void Game::Render()
 
 	//Other ships
 
-	for(auto &ship : ship_list)
+	for (auto &ship : ship_list)
 	{
 		if (ship.get() == ship_cursor)
 		{
 			//ship->RenderShipSelected(world_cam);
 		}
 
-		ship->Render(world_cam, false, (mode == Mode::Scavenge) );
+		ship->Render(world_cam, false, (mode == Mode::Scavenge));
 	}
 
 
@@ -244,7 +243,7 @@ void Game::Render()
 	{
 		player_ship.RenderShipSelected(world_cam);
 
-		player_ship.Render(world_cam, (bool)locked_on_part_cursor, false);
+		player_ship.Render(world_cam, (bool) locked_on_part_cursor, false);
 
 		if (showing_scavenge_hints > 0)
 		{
@@ -280,7 +279,7 @@ void Game::Render()
 		{
 			glm::vec2 end_pos = player_ship.GetWorldPositionConnection(player_ship.connector_cursor);
 
-			if(player_ship.connector_cursor->is_connected)
+			if (player_ship.connector_cursor->is_connected)
 				RenderColour("red");
 			else
 				RenderColour("tractorbeam");
@@ -295,44 +294,55 @@ void Game::Render()
 		}
 
 
-
 	}
 
 	//Projectiles
 	RenderProjectiles();
 
 
-	//HUD
-
-	RenderColour("blue");
-	// Render mouse crosshair
-	RenderLine(screen_cam, mouse_cursor.x - 10, mouse_cursor.y, mouse_cursor.x + 10, mouse_cursor.y);
-	RenderLine(screen_cam, mouse_cursor.x, mouse_cursor.y - 10, mouse_cursor.x, mouse_cursor.y + 10);
+	//cursors
 
 
-	//RenderCircle(screen_cam, hud.width/2, (hud.height-100)/2, 64.0f);
-
-
-	//RenderCircle(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 64.0f);
-	//s.Render(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 0.0f);
-
-
-	if (locked_on_ship_cursor and locked_on_part_cursor)
+	if (mode == Mode::Combat)
 	{
-		const glm::vec2 connector_pos = locked_on_part_cursor->GetOffset();
+		RenderColour("red");
+		//RenderLine(screen_cam, mouse_cursor.x - 10, mouse_cursor.y, mouse_cursor.x + 10, mouse_cursor.y);
+		//RenderLine(screen_cam, mouse_cursor.x, mouse_cursor.y - 10, mouse_cursor.x, mouse_cursor.y + 10);
 
-		const glm::vec2 world_pos = locked_on_ship_cursor->GetTransform().GetWorldPosition(connector_pos);
+		//render animated circle crosshair
+		RenderCircle(screen_cam, mouse_cursor.x, mouse_cursor.y, 16);
+		RenderCircle(screen_cam, mouse_cursor.x, mouse_cursor.y, cosf( fmodf(wallclock*3.0f, glm::radians(90.0f)) ) * 15);
+	}
+
+
+	if (mode == Mode::Scavenge)
+	{
+		//Render salvage cursor
+		glm::vec2 salvage_cursor_world_pos;
+
+		if (locked_on_ship_cursor and locked_on_part_cursor)
+		{
+			const glm::vec2 connector_pos = locked_on_part_cursor->GetOffset();
+			salvage_cursor_world_pos = locked_on_ship_cursor->GetTransform().GetWorldPosition(connector_pos);
+		}
+		else
+		{
+			salvage_cursor_world_pos = mouse_world_cursor;
+		}
 
 		RenderColour("blue");
-		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4) * 48.0f);
-		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4.1) * 32.0f);
+		RenderCircle(world_cam, salvage_cursor_world_pos.x, salvage_cursor_world_pos.y, sinf(wallclock * 4) * 48.0f);
+		RenderCircle(world_cam, salvage_cursor_world_pos.x, salvage_cursor_world_pos.y, sinf(wallclock * 4.1) * 32.0f);
 
 		RenderColour("white");
-		RenderCircle(world_cam, world_pos.x, world_pos.y, sinf(wallclock*4) * 28.0f);
+		RenderCircle(world_cam, salvage_cursor_world_pos.x, salvage_cursor_world_pos.y, sinf(wallclock * 4) * 28.0f);
 
 	}
 
+
+	//HUD
 	hud.Render();
+
 
 	SDL_RenderPresent(RENDERER);
 }
@@ -430,8 +440,9 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 
 	//Couldn't get multiple part ship connections working .. running out of time, so just attach single parts
 
-	//Destroy surrounding parts
-	other_ship->DeletePartsAroundPart(other_part);
+
+	//Detach ship part
+	other_part->DisconnectAll();
 
 	player_ship.AttachPartAtCursor(other_part->GetName(), true);
 	PlayWorldSound("select", player_ship.GetWorldPosition());
@@ -749,7 +760,7 @@ void Game::SetShipCursor()
 
 		if (not ship_cursor or (dist < dist_min))
 		{
-			if (dist < (ship->GetBoundingCircle() + 0))
+			if (dist < (ship->GetBoundingCircle() + 400))
 			{
 				dist_min = dist;
 				ship_cursor = ship.get();
@@ -814,6 +825,9 @@ void Game::SetMode(Mode new_mode)
 {
 	mode = new_mode;
 
+	ASSETS->GetSound("menubeep").PlayWithVolume(MASTER_VOLUME);
+
+
 	InvalidateShipCursor();
 	locked_on_ship_cursor = nullptr;
 	locked_on_part_cursor = nullptr;
@@ -822,11 +836,17 @@ void Game::SetMode(Mode new_mode)
 	{
 		translating = true;
 		rotating = false;
+
+		ASSETS->GetSound("scanner").PlayWithVolume(MASTER_VOLUME);
+
 	}
 	else if (mode == Mode::Combat)
 	{
 		translating = true;
 		rotating = true;
+
+		//ASSETS->GetSound("redalert").PlayWithVolume(MASTER_VOLUME);
+
 	}
 	else if (mode == Mode::GameOver)
 	{
@@ -951,7 +971,8 @@ Star * NewStar(glm::vec2 pos, float radius)
 void Game::UpdateStars(float dt)
 {
 	unsigned star_quota = 1000;
-	float radius_remove = 4000.0f;
+	float radius_remove = 5000.0f;
+	float radius_add = 4000.0f;
 
 	for(auto &star : star_list)
 	{
@@ -959,13 +980,13 @@ void Game::UpdateStars(float dt)
 
 		if (distance_to_player > radius_remove)
 		{
-			star.reset( NewStar(player_ship.GetWorldPosition(), radius_remove) );
+			star.reset( NewStar(player_ship.GetWorldPosition(), radius_add) );
 		}
 	}
 
 	while (star_list.size() < star_quota)
 	{
-		star_list.emplace_back( NewStar(player_ship.GetWorldPosition(), radius_remove));
+		star_list.emplace_back( NewStar(player_ship.GetWorldPosition(), radius_add));
 	}
 }
 

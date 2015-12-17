@@ -50,6 +50,8 @@ because it really helps with the game immersion)
   - Could Destroy enemy ships, and player's ship core with "scrap" in salvage mode
 - UI Tweaks:
   - Added more audio and visual feedback to attach mechanic.  Should be more obvious now.
+  - Easier part selection
+  - Better and more visible cursors, and selection markers
 - Gameplay changes:
   - Changed "scrap" function to "detach": easily remove parts from player ship without destroying them.
   - Implemented the Armour block, will take 2 shots to destroy.

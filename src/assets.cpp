@@ -143,6 +143,11 @@ void Assets::SetupSounds()
 	sound_list.emplace("tractorbeam", Sound{prefix +"tractorbeam.wav"});
 	sound_list.emplace("select", Sound{prefix +"select.wav"});
 	sound_list.emplace("error", Sound{prefix +"error.wav"});
+
+	sound_list.emplace("menubeep", Sound{prefix +"menubeep.wav"});
+	sound_list.emplace("redalert", Sound{prefix +"redalert.wav"});
+	sound_list.emplace("scanner", Sound{prefix +"scanner.wav"});
+
 }
 
 
