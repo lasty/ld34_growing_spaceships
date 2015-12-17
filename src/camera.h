@@ -48,6 +48,8 @@ public:
 	void SetOffset(float x, float y);
 	void SetOffsetRelative(float x, float y);
 
+	const glm::vec2 &GetOffset() const { return offset; }
+
 	void SetZoom(float z);
 	void SetZoomRelative(float z);
 

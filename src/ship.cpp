@@ -487,6 +487,15 @@ void Ship::CheckCollision(Projectile *proj)
 			if (distance2 < (radius2 + radius3))
 			{
 				//This part is hit
+				if (part->GetName() == "core")
+				{
+					GAME->PlayWorldSound("explosion2", pos3);
+				}
+				else
+				{
+					GAME->PlayWorldSound("explosion1", pos3);
+				}
+
 
 				DeletePart(part.get());
 				proj->SetRemove();

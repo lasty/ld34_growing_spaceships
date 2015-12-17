@@ -21,6 +21,7 @@ extern class Assets * ASSETS;
 
 constexpr float TRACTOR_SPEED = 0.3f;
 
+constexpr float MASTER_VOLUME = 0.4f;
 
 enum class Mode
 {

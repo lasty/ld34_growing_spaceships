@@ -160,6 +160,8 @@ public:
 	void UpdateStars(float dt);
 
 	void RenderStars();
+
+	void PlayWorldSound(const std::string &name, const glm::vec2 &location);
 };
 
 

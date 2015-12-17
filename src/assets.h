@@ -10,6 +10,7 @@
 #include "globals.h"
 #include "part.h"
 #include "font.h"
+#include "sound.h"
 
 #include <map>
 
@@ -23,6 +24,7 @@ private:
 	void SetupSprites();
 	void SetupFonts();
 	void SetupColours();
+	void SetupSounds();
 
 	void SetupParts();
 	void SetupShips();
@@ -40,6 +42,8 @@ private:
 
 	std::vector<std::string> ship_list;
 
+	std::map<std::string, Sound> sound_list;
+
 public:
 
 	Surface & GetSurface(const std::string &name);
@@ -53,6 +57,8 @@ public:
 	Part & GetPart(const std::string &name);
 
 	std::string GetRandomShipName();
+
+	Sound & GetSound(const std::string &name);
 
 };
 

@@ -26,6 +26,8 @@ Assets::Assets()
 
 	SetupColours();
 
+	SetupSounds();
+
 	ASSETS = this;
 
 	//Deferred Setup  (Requires ASSETS to be set)
@@ -129,6 +131,21 @@ void Assets::SetupColours()
 }
 
 
+void Assets::SetupSounds()
+{
+	const std::string prefix = DATA_PATH + "sounds/";
+
+	sound_list.emplace("attach", Sound{prefix +"attach.wav"});
+	sound_list.emplace("explosion1", Sound{prefix +"explosion1.wav"});
+	sound_list.emplace("explosion2", Sound{prefix +"explosion2.wav"});
+	sound_list.emplace("laser", Sound{prefix +"laser.wav"});
+	sound_list.emplace("missile", Sound{prefix +"missile.wav"});
+	sound_list.emplace("tractorbeam", Sound{prefix +"tractorbeam.wav"});
+	sound_list.emplace("select", Sound{prefix +"select.wav"});
+	sound_list.emplace("error", Sound{prefix +"error.wav"});
+}
+
+
 void Assets::SetupParts()
 {
 	std::ifstream in{DATA_PATH + "parts.txt"};
@@ -195,6 +212,12 @@ Font &Assets::GetFont(const std::string &name)
 SDL_Color & Assets::GetColour(const std::string &name)
 {
 	return colour_list.at(name);
+}
+
+
+Sound &Assets::GetSound(const std::string &name)
+{
+	return sound_list.at(name);
 }
 
 

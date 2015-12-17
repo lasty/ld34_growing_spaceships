@@ -345,6 +345,12 @@ void Game::AttachPartToShip()
 		{
 			locked_on_ship_cursor = ship_cursor;
 			locked_on_part_cursor = ship_cursor->part_cursor;
+
+			PlayWorldSound("select", ship_cursor->GetWorldPosition());
+		}
+		else
+		{
+			PlayWorldSound("error", ship_cursor->GetWorldPosition());
 		}
 	}
 	else  //else attaching to player ship
@@ -364,10 +370,17 @@ void Game::DeleteShipPart()
 
 void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 {
+	if (not other_part or not other_ship)
+	{
+		PlayWorldSound("error", player_ship.GetWorldPosition());
+	}
+
 	if (not other_ship) return;
 	if (not other_part) return;
+
 	if (not player_ship.connector_cursor) return;
 	if (player_ship.connector_cursor->is_connected) return;
+
 
 	//Coudln't get multiple part ship connections working .. running out of time, so just attach single parts
 
@@ -375,6 +388,7 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 	other_ship->DeletePartsAroundPart(other_part);
 
 	player_ship.AttachPartAtCursor(other_part->GetName(), true);
+	PlayWorldSound("select", player_ship.GetWorldPosition());
 
 	//glm::vec2 attach_pos { connector_cursor->x, connector_cursor->y };
 	//float attach_rot = connector_cursor->rot;
@@ -388,6 +402,7 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 	glm::vec2 end_pos = player_ship.GetWorldPositionConnection(player_ship.connector_cursor);
 
 	tractor_list.emplace_back(new TractorBeam{other_part, start_pos, end_pos});
+	PlayWorldSound("tractorbeam", start_pos);
 
 	//other_ship->part_list.clear();
 	other_ship->DeletePart(other_part);
@@ -800,6 +815,9 @@ void Game::FireWeapons(Ship &ship, int weapgroup, glm::vec2 target)
 
 	std::string part_name = weapgroup == 1 ? "laser" : "launcher";
 
+	PlayWorldSound(weapgroup == 1 ? "laser" : "missile", ship.GetWorldPosition());
+
+
 	for (const auto &part : ship.GetParts())
 	{
 		if (part->GetName() != part_name) continue;
@@ -914,4 +932,19 @@ void Game::RenderStars()
 		auto p = world_cam.WorldToScreen(star->pos.x, star->pos.y);
 		SDL_RenderDrawPoint(RENDERER, p.x, p.y);
 	}
+}
+
+
+void Game::PlayWorldSound(const std::string &name, const glm::vec2 &location)
+{
+	auto & sound =  ASSETS->GetSound(name);
+
+	float dist = glm::distance(-world_cam.GetOffset(), location);
+	if (dist == 0.0f) dist = 1.0f;
+
+	float loudness = 2000.0f / dist;
+
+	loudness = glm::clamp(loudness, 0.0f, 1.0f) * MASTER_VOLUME;
+
+	sound.PlayWithVolume(loudness);
 }

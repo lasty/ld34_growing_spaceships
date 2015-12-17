@@ -6,6 +6,7 @@
 #include "tractorbeam.h"
 #include "render.h"
 #include "globals.h"
+#include "game.h"
 
 
 TractorBeam::TractorBeam(Part *part, glm::vec2 start, glm::vec2 end)
@@ -35,6 +36,8 @@ void TractorBeam::Update(float dt)
 	{
 		interp = 1.0f;
 		finished = true;
+
+		GAME->PlayWorldSound("attach", end_pos);
 	}
 
 	current_pos = glm::mix(start_pos, end_pos, interp);

@@ -40,16 +40,18 @@ Some post release tweaks:
 - Fixed disappearing player ship bug.
 
 
-Known Issues
-----------
-- There is no sound
-- Occasional rare crash when attaching parts that get destroyed before being tractored in (May have been fixed)
+Patch 2:
+--------
+(Post compo update)
+- Added in some sounds.  (Really wish I spent some time during comp to do this,
+because it really helps with the game immersion)
+
 
 
 Planed features that were cut
 ----------
 Cut features due to time or complexity:
-- Sound and/or Music
+- Music
 - More part types, including armour pieces, shield pieces, thrusters
 - Energy management (Reactors, capacitors, can only shoot when charged)
 - Damage/Repair mechanic
