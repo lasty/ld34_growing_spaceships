@@ -93,6 +93,7 @@ void HUD::Render()
 
 }
 
+
 void HUD::SetMode(Mode mode)
 {
 	if (mode == Mode::Scavenge)
@@ -101,7 +102,7 @@ void HUD::SetMode(Mode mode)
 
 		text_control_mode.SetText("MODE: Scavenge");
 		text_action1.SetText("ATTACH");
-		text_action2.SetText("SCRAP");
+		text_action2.SetText("DETACH");
 	}
 
 	if (mode == Mode::Combat)
@@ -125,6 +126,7 @@ void HUD::SetMode(Mode mode)
 		text_help1.SetText("Press TAB/SPACE to start new game");
 	}
 }
+
 
 void HUD::RenderWarning_SelectPartFirst(SDL_Point pos)
 {

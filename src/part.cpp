@@ -10,6 +10,9 @@
 
 //#include <iostream>
 
+
+
+
 Part::Part(const std::string &name, std::ifstream &in)
 {
 	part_name = name;
@@ -39,7 +42,6 @@ Part::Part(const std::string &name, std::ifstream &in)
 		if (not in or in.eof() or in.bad()) break;
 
 		connectors.push_back(Connector(x, y, rot));
-
 	}
 
 }
@@ -77,6 +79,36 @@ Part::Part(const Part &copy, float x, float y, float rot)
 	}
 
 }
+
+
+//Disconnect this part from adjacent parts
+void Part::DisconnectAll()
+{
+	for(auto &conn : connectors)
+	{
+		if (conn.is_connected)
+		{
+			assert(conn.connects_to);
+
+			for(auto &conn2 : conn.connects_to->connectors)
+			{
+				if (conn2.is_connected)
+				{
+					assert(conn2.connects_to);
+					if (conn2.connects_to == this)
+					{
+						conn2.is_connected = false;
+						conn2.connects_to = nullptr;
+					}
+				}
+			}
+
+			conn.is_connected = false;
+			conn.connects_to = nullptr;
+		}
+	}
+}
+
 
 
 void Part::Update(float dt)
@@ -170,4 +202,12 @@ void Part::SetIslandRecursive(int island_no)
 
 		p->SetIslandRecursive(island_no);
 	}
+}
+
+
+void Part::ChangeType(const std::string &name)
+{
+	part_name = name;
+
+	sprite_ref = &ASSETS->GetSprite(name);
 }

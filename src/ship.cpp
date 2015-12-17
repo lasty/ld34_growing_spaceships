@@ -248,14 +248,24 @@ void Ship::AttachPartAtCursor(const std::string &partname, bool delayed_start)
 }
 
 
-
-void Ship::DeletePartAtCursor()
+void Ship::DetachPartAtCursor()
 {
-	if (not part_cursor) return;
+	if (not part_cursor)
+	{
+		GAME->PlayWorldSound("error", GetWorldPosition());
+		return;
+	}
 
-	DeletePart(part_cursor);
+	if (part_cursor->GetName() == "core") //Don't delete the core
+	{
+		GAME->PlayWorldSound("error", GetWorldPosition());
+		return;
+	}
 
-	RecalcConnections();
+	GAME->PlayWorldSound("attach", GetWorldPosition());
+	part_cursor->DisconnectAll();
+
+	RecalcIslands();
 	RecalcCenterOfGravity();
 }
 
@@ -487,9 +497,13 @@ void Ship::CheckCollision(Projectile *proj)
 			if (distance2 < (radius2 + radius3))
 			{
 				//This part is hit
+
 				if (part->GetName() == "core")
 				{
 					GAME->PlayWorldSound("explosion2", pos3);
+
+					//set thrust to 0, or ships will keep drifting in last set velocity
+					SetThrust({0.0, 0.0});
 				}
 				else
 				{
@@ -497,7 +511,18 @@ void Ship::CheckCollision(Projectile *proj)
 				}
 
 
-				DeletePart(part.get());
+				//Apply damage to part
+				//TODO: refactor this, and/or add hitpoints
+
+				if (part->GetName() == "armour")
+				{
+					part->ChangeType("scaffold");
+				}
+				else
+				{
+					DeletePart(part.get());
+				}
+
 				proj->SetRemove();
 
 				RecalcConnections();

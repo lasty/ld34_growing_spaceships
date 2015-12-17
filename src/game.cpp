@@ -108,7 +108,6 @@ void Game::OnKeyUp(SDL_Keycode key)
 	if (key == SDLK_s or key == SDLK_DOWN) arrow_controls.down = false;
 	if (key == SDLK_a or key == SDLK_LEFT) arrow_controls.left = false;
 	if (key == SDLK_d or key == SDLK_RIGHT) arrow_controls.right = false;
-
 }
 
 
@@ -145,7 +144,6 @@ void Game::OnMouseWheel(int y)
 {
 	world_cam.SetZoomRelative(0.20f * -y);
 	SetMouseCursor(mouse_cursor.x, mouse_cursor.y);
-
 }
 
 
@@ -165,6 +163,8 @@ void Game::Update(float dt)
 
 	CheckForDeadShips();
 
+	//Update screen position, camera might have moved
+	SetMouseCursor(mouse_cursor.x, mouse_cursor.y);
 
 	if (rotating)
 	{
@@ -175,6 +175,12 @@ void Game::Update(float dt)
 	{
 		player_ship.SetThrust(arrow_controls.GetVec());
 	}
+	else
+	{
+		//set thrust to 0, or ships will keep drifting in last set velocity
+		player_ship.SetThrust({0.0, 0.0});
+	}
+
 
 
 	SetShipCursor();
@@ -193,6 +199,10 @@ void Game::Update(float dt)
 	//Update camera
 	glm::vec2 track = player_ship.GetWorldPosition() + player_ship.GetWorldPosition() + mouse_world_cursor;
 	track /= 3.0f;
+
+	//Adjust for GUI at the bottom of the screen
+	track -= world_cam.ScreenToWorld(0, 0) - world_cam.ScreenToWorld(0, 50);
+
 	//track = player_ship.GetWorldPosition();
 	//std::cout << "player ship pos = " << player_ship.GetWorldPosition().x << "  ,  " << player_ship.GetWorldPosition().y << std::endl;
 	world_cam.SetTracking(-track);
@@ -261,6 +271,33 @@ void Game::Render()
 	//Tractors
 	RenderTractors();
 
+	//Render line from part to player ship connector
+	if (locked_on_part_cursor and locked_on_ship_cursor)
+	{
+		glm::vec2 start_pos = locked_on_ship_cursor->GetWorldPositionPart(locked_on_part_cursor);
+
+		if (player_ship.connector_cursor)
+		{
+			glm::vec2 end_pos = player_ship.GetWorldPositionConnection(player_ship.connector_cursor);
+
+			if(player_ship.connector_cursor->is_connected)
+				RenderColour("red");
+			else
+				RenderColour("tractorbeam");
+
+			RenderLine(world_cam, end_pos.x, end_pos.y, start_pos.x, start_pos.y);
+		}
+		else
+		{
+			RenderColour("blue");
+
+			RenderLine(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, start_pos.x, start_pos.y);
+		}
+
+
+
+	}
+
 	//Projectiles
 	RenderProjectiles();
 
@@ -268,10 +305,12 @@ void Game::Render()
 	//HUD
 
 	RenderColour("blue");
-	//s.Render_Simple(mouse_cursor.x, mouse_cursor.y);
-
+	// Render mouse crosshair
 	RenderLine(screen_cam, mouse_cursor.x - 10, mouse_cursor.y, mouse_cursor.x + 10, mouse_cursor.y);
 	RenderLine(screen_cam, mouse_cursor.x, mouse_cursor.y - 10, mouse_cursor.x, mouse_cursor.y + 10);
+
+
+	//RenderCircle(screen_cam, hud.width/2, (hud.height-100)/2, 64.0f);
 
 
 	//RenderCircle(world_cam, mouse_world_cursor.x, mouse_world_cursor.y, 64.0f);
@@ -339,6 +378,12 @@ void Game::AttachPartToShip()
 {
 	//player_ship.AttachPartAtCursor(part_def);
 
+	if (player_ship.connector_cursor)
+	{
+		AttachShipHere(locked_on_ship_cursor, locked_on_part_cursor);
+
+	}
+	else
 	if (ship_cursor)  //if targeting other ship
 	{
 		if (ship_cursor->IsJunk())  //only strip parts of destroyed ships
@@ -353,18 +398,19 @@ void Game::AttachPartToShip()
 			PlayWorldSound("error", ship_cursor->GetWorldPosition());
 		}
 	}
-	else  //else attaching to player ship
-	{
-		AttachShipHere(locked_on_ship_cursor, locked_on_part_cursor);
-	}
+	//else  //else attaching to player ship
+	//{
+	//}
 
 }
 
 
 void Game::DeleteShipPart()
 {
-	player_ship.DeletePartAtCursor();
-	if (ship_cursor) ship_cursor->DeletePartAtCursor();
+	//Reworking this to just detach player ship parts without destroying them
+	player_ship.DetachPartAtCursor();
+
+	//if (ship_cursor) ship_cursor->DeletePartAtCursor();
 }
 
 
@@ -378,11 +424,11 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 	if (not other_ship) return;
 	if (not other_part) return;
 
-	if (not player_ship.connector_cursor) return;
-	if (player_ship.connector_cursor->is_connected) return;
+	if (not player_ship.connector_cursor) { PlayWorldSound("error", player_ship.GetWorldPosition()); return; }
+	if (player_ship.connector_cursor->is_connected) { PlayWorldSound("error", player_ship.GetWorldPosition()); return; }
 
 
-	//Coudln't get multiple part ship connections working .. running out of time, so just attach single parts
+	//Couldn't get multiple part ship connections working .. running out of time, so just attach single parts
 
 	//Destroy surrounding parts
 	other_ship->DeletePartsAroundPart(other_part);

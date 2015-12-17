@@ -38,6 +38,8 @@ public:
 	Part(const Part &copy, float x, float y, float rot);
 
 
+	void DisconnectAll();
+
 private:
 
 	int island = 0;
@@ -80,6 +82,7 @@ public:
 
 	void SetIslandRecursive(int island_no);
 
+	void ChangeType(const std::string &name);
 };
 
 

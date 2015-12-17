@@ -45,7 +45,14 @@ Patch 2:
 (Post compo update)
 - Added in some sounds.  (Really wish I spent some time during comp to do this,
 because it really helps with the game immersion)
-
+- Some bugfixes:
+  - Fixed Camera tracking slightly off center, and not following mouse
+  - Could Destroy enemy ships, and player's ship core with "scrap" in salvage mode
+- UI Tweaks:
+  - Added more audio and visual feedback to attach mechanic.  Should be more obvious now.
+- Gameplay changes:
+  - Changed "scrap" function to "detach": easily remove parts from player ship without destroying them.
+  - Implemented the Armour block, will take 2 shots to destroy.
 
 
 Planed features that were cut

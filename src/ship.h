@@ -57,7 +57,7 @@ public:
 
 	void AttachPartAtCursor(const std::string &partname, bool delayed_start);
 
-	void DeletePartAtCursor();
+	void DetachPartAtCursor();
 	void DeletePartsAroundPart(Part *part);
 	void DeletePart(Part *part);
 
