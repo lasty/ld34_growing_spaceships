@@ -476,6 +476,12 @@ void Game::AttachShipHere(Ship *other_ship, Part *other_part)
 
 void Game::NewGame(bool run_tutorial)
 {
+	//invalidate cursors
+	InvalidateShipCursor();
+	locked_on_ship_cursor = nullptr;
+	locked_on_part_cursor = nullptr;
+
+	//Get ship name, and setup tutorial
 	std::string whatship;
 
 	if (run_tutorial)
@@ -490,11 +496,8 @@ void Game::NewGame(bool run_tutorial)
 		whatship = ASSETS->GetRandomShipName();
 	}
 
-
 	//Reset Player Ship
-	player_ship.Clear();
-	std::ifstream in{DATA_PATH+"/ships/"+whatship+".txt"};
-	player_ship.Deserialize(in);
+	player_ship.Load(whatship);
 
 	player_ship.GetTransform().SetPosition(0.0f, 0.0f);
 	player_ship.GetTransform().SetRotation(0.0f);
@@ -507,7 +510,6 @@ void Game::NewGame(bool run_tutorial)
 	star_list.clear();
 	tractor_list.clear();
 	projectile_list.clear();
-
 
 	//call start up for level
 	SetupLevel();

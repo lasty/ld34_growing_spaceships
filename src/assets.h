@@ -18,6 +18,7 @@ class Assets
 {
 public:
 	Assets();
+	~Assets();
 
 private:
 	void SetupSurfaces();

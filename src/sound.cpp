@@ -5,7 +5,7 @@
 #include "sound.h"
 
 
-Sound::Sound(const std::string filename)
+Sound::Sound(const std::string &filename)
 : chunk(Mix_LoadWAV(filename.c_str()), &Mix_FreeChunk)
 {
 

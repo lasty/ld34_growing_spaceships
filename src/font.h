@@ -14,6 +14,9 @@ class Font
 public:
 	Font(const std::string &filename, int size);
 
+	Font(const Font &copy) = delete;
+	Font(Font &&move) = default;
+
 private:
 
 	std::unique_ptr<TTF_Font, decltype(&TTF_CloseFont)> font_ptr;

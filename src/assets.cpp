@@ -38,6 +38,15 @@ Assets::Assets()
 }
 
 
+Assets::~Assets()
+{
+	ASSETS = nullptr;
+
+	//Stop playing all sounds before destroying sound objects
+	Mix_HaltChannel(-1);
+}
+
+
 void Assets::SetupSurfaces()
 {
 	std::string prefix = DATA_PATH + "images/";
@@ -57,8 +66,9 @@ void Assets::SetupSurfaces()
 		if (in.eof()) break;
 
 		std::cout << "name: " << name << "  filename: " << filename << std::endl;
+		std::string fn = prefix + filename;
 
-		surface_list.emplace(name, Surface{prefix + filename});
+		surface_list.emplace(name, Surface{fn});
 	}
 
 }

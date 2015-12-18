@@ -16,9 +16,11 @@ class Surface
 {
 public:
 	Surface(int width, int height);
-	Surface(const std::string &filename);
-	Surface(SDL_Surface *ptr);
+	explicit Surface(const std::string &filename);
+	explicit Surface(SDL_Surface *ptr);
 
+	Surface(const Surface &copy) = delete;
+	Surface(Surface &&move) = default;
 
 private:
 	std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface;

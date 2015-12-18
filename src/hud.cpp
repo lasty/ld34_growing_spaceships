@@ -165,7 +165,7 @@ int HUD::GetHudSize() const
 }
 
 
-void HUD::SetTutorial(int n, int m, const std::string &text1, const std::string text2)
+void HUD::SetTutorial(int n, int m, const std::string &text1, const std::string &text2)
 {
 	std::stringstream ss;
 	ss << "Tutorial:  (" << n << " of " << m <<")";

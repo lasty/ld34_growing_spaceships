@@ -13,7 +13,7 @@
 class Sound
 {
 public:
-	Sound(const std::string filename);
+	explicit Sound(const std::string &filename);
 	~Sound();
 
 	Sound(Sound &&move_construct) = default;

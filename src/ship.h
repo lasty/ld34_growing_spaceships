@@ -18,7 +18,12 @@ class Ship
 {
 public:
 	Ship();
-	Ship(const std::string &ship_type);
+	explicit Ship(const std::string &ship_type);
+
+	Ship(const Ship&copy) = delete;
+	Ship(Ship &&move) = delete;
+
+	void Load(const std::string &ship_type);
 
 	void Deserialize(std::istream &in);
 	void Serialize(std::ostream &out);

@@ -81,6 +81,14 @@ bool Ship::ShouldRemove() const
 }
 
 
+void Ship::Load(const std::string &ship_type)
+{
+	Clear();
+	std::ifstream in{DATA_PATH+"/ships/"+ship_type+".txt"};
+	Deserialize(in);
+}
+
+
 void Ship::Deserialize(std::istream &in)
 {
 	Clear();

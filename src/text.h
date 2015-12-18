@@ -15,6 +15,9 @@ public:
 	Text(Font &font, const std::string &text, const SDL_Color &colour);
 	Text(Font &font, const std::string &text);
 
+	Text(const Text &copy) = delete;
+	Text(Text &&move) = delete;
+
 private:
 	Font &font;
 	std::string text;

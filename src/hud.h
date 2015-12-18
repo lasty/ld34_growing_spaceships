@@ -15,8 +15,8 @@ class HUD
 public:
 	HUD();
 
-	float width;
-	float height;
+	float width = 0;
+	float height = 0;
 
 private:
 	SDL_Color bgcol;
@@ -64,7 +64,7 @@ public:
 
 	void UpdateShipCount(int ships, int junk);
 
-	void SetTutorial(int n, int m, const std::string &text1, const std::string text2);
+	void SetTutorial(int n, int m, const std::string &text1, const std::string &text2);
 
 	void RenderTutorial();
 

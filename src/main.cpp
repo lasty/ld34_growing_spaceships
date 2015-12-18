@@ -104,6 +104,8 @@ void InitSDL2()
 
 void ShutdownSDL2()
 {
+	Mix_HaltChannel(-1);
+
 	Mix_CloseAudio();
 
 	SDL_Quit();
@@ -146,91 +148,98 @@ void RunGameLoop()
 
 	CreateRenderer(window.get());
 
-	assert(ASSETS == nullptr);
-	Assets assets;
-	assert(ASSETS == &assets);
-
-	assert(GAME == nullptr);
-	Game game;
-	assert(GAME == &game);
-	game.ResizeWindow(1200, 800);
-
-
-	bool running = true;
-	Uint32 last_time = SDL_GetTicks();
-
-	Uint32 fps_timer = SDL_GetTicks();
-	int fps_frames = 0;
-
-	while(running and game.GetRunning())
 	{
+		assert(ASSETS == nullptr);
+		Assets assets;
+		assert(ASSETS == &assets);
 
-		//Process event loop
-		SDL_Event event;
-		while(SDL_PollEvent(&event))
+		assert(GAME == nullptr);
+		Game game;
+		assert(GAME == &game);
+		game.ResizeWindow(1200, 800);
+
+
+		bool running = true;
+		Uint32 last_time = SDL_GetTicks();
+
+		Uint32 fps_timer = SDL_GetTicks();
+		int fps_frames = 0;
+
+		while (running and game.GetRunning())
 		{
-			switch (event.type)
+
+			//Process event loop
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
 			{
-				case SDL_KEYDOWN:
-					if (event.key.keysym.sym == SDLK_ESCAPE) { running = false;  break; }
-					//fallthrough
-				case SDL_MOUSEMOTION:
-				case SDL_MOUSEBUTTONDOWN:
-				case SDL_MOUSEBUTTONUP:
-				case SDL_MOUSEWHEEL:
-				case SDL_KEYUP:
-					game.OnInput(event);
-					break;
-
-				case SDL_QUIT:
-					running = false;
-					break;
-
-				case SDL_WINDOWEVENT:
-					switch(event.window.event)
-					{
-						case SDL_WINDOWEVENT_RESIZED:
-							game.ResizeWindow(event.window.data1, event.window.data2);
+				switch (event.type)
+				{
+					case SDL_KEYDOWN:
+						if (event.key.keysym.sym == SDLK_ESCAPE)
+						{
+							running = false;
 							break;
+						}
+						//fallthrough
+					case SDL_MOUSEMOTION:
+					case SDL_MOUSEBUTTONDOWN:
+					case SDL_MOUSEBUTTONUP:
+					case SDL_MOUSEWHEEL:
+					case SDL_KEYUP:
+						game.OnInput(event);
+						break;
 
-					}
-					break;
+					case SDL_QUIT:
+						running = false;
+						break;
+
+					case SDL_WINDOWEVENT:
+						switch (event.window.event)
+						{
+							case SDL_WINDOWEVENT_RESIZED:
+								game.ResizeWindow(event.window.data1, event.window.data2);
+								break;
+
+						}
+						break;
+				}
 			}
+
+
+			// Update
+
+			Uint32 this_time = SDL_GetTicks();
+
+			float dt = (this_time - last_time) / 1000.0f;
+			last_time = this_time;
+
+			//const float FPS = 30;
+			//float dt = 1.0f / FPS;
+
+			fps_frames++;
+			if (this_time > fps_timer + 1000)
+			{
+
+				std::cout << "FPS: " << fps_frames << std::endl;
+
+				fps_frames = 0;
+				fps_timer = this_time;
+			}
+
+
+			game.Update(dt);
+
+
+			// Render
+
+			game.Render();
+
+
+			SDL_Delay(1);  //To prevent too high FPS
+
 		}
 
-
-		// Update
-
-		Uint32 this_time = SDL_GetTicks();
-
-		float dt = (this_time - last_time) / 1000.0f;
-		last_time = this_time;
-
-		//const float FPS = 30;
-		//float dt = 1.0f / FPS;
-
-		fps_frames++;
-		if (this_time > fps_timer + 1000)
-		{
-
-			std::cout << "FPS: " << fps_frames << std::endl;
-
-			fps_frames = 0;
-			fps_timer = this_time;
-		}
-
-
-		game.Update(dt);
-
-
-		// Render
-
-		game.Render();
-
-
-		SDL_Delay(1);  //To prevent too high FPS
-
-	}
+	}  //make sure game and assets objects are destroyed here
 
 	DestroyRenderer();
 }

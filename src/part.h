@@ -20,6 +20,8 @@ public:
 	: x{x}, y{y}, rot{rot}
 	{ }
 
+	~Connector() { is_connected = false;  connects_to = nullptr; }
+
 	float x = 0.0f;
 	float y = 0.0f;
 	float rot = 0.0f;
@@ -37,6 +39,10 @@ public:
 
 	Part(const Part &copy, float x, float y, float rot);
 
+	~Part() { sprite_ref = nullptr; }
+
+	Part(const Part &copy) = delete;
+	Part(Part &&move) = default;
 
 	void DisconnectAll();
 

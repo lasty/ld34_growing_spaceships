@@ -40,6 +40,9 @@ class Game
 public:
 	Game();
 
+	Game(const Game &copy) = delete;
+	Game(Game &&move) = delete;
+
 private:
 	bool running = true;
 

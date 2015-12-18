@@ -14,8 +14,8 @@
 
 
 Part::Part(const std::string &name, std::ifstream &in)
+: part_name(name)
 {
-	part_name = name;
 
 	std::string sprite_name;
 	in >> sprite_name;
@@ -48,19 +48,12 @@ Part::Part(const std::string &name, std::ifstream &in)
 
 
 Part::Part(const Part &copy, float x, float y, float rot)
+: part_name(copy.part_name)
+, offset{x, y}
+, rot(rot)
+, sprite_ref(copy.sprite_ref)
+, connectors(copy.connectors)
 {
-	part_name = copy.part_name;
-	sprite_ref = copy.sprite_ref;
-	offset = copy.offset;
-	this->rot = copy.rot;
-	//collision_circles = copy.collision_circles;
-	connectors = copy.connectors;
-
-	offset.x = x;
-	offset.y = y;
-	this->rot = rot;
-
-
 	for(auto &connector : connectors)
 	{
 		//transform old circle to new circle position

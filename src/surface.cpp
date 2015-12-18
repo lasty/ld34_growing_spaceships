@@ -15,14 +15,16 @@
 Surface::Surface(int width, int height)
 : Surface(SDL_CreateRGBSurface(0,width,height,32,0,0,0,0))
 {
-
+	assert(surface);
+	assert(texture);
 }
 
 
 Surface::Surface(const std::string &filename)
 : Surface(IMG_Load(filename.c_str()))
 {
-
+	assert(surface);
+	assert(texture);
 }
 
 
@@ -66,6 +68,7 @@ void Surface::SetBlend(SDL_BlendMode mode)
 
 void Surface::SetSurface(SDL_Surface *ptr)
 {
+	texture.reset();
 	surface.reset(ptr);
 	UpdateSurface();
 }
@@ -74,5 +77,6 @@ void Surface::SetSurface(SDL_Surface *ptr)
 void Surface::UpdateTexture()
 {
 	texture = {	SDL_CreateTextureFromSurface(RENDERER, surface.get()), SDL_DestroyTexture };
+	assert(texture);
 }
 
